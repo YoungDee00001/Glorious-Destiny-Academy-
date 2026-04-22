@@ -1,0 +1,50 @@
+{% url 'home' as home_url %}
+{% url 'login' as login_url %}
+{% url 'logout' as logout_url %}
+{% url 'register' as register_url %}
+
+{% load static %}
+
+
+
+<div class="container">
+
+  <div class="topbar">
+
+
+    <div class="hamburger" onclick="toggleMenu()">
+      <div class="line top"></div>
+      <div class="line bottom"></div>
+    </div>
+
+    <div id="sideMenu" class="side-menu">
+    {% if request.user.is_authenticated %}
+
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" style="background-color:  rgb(77, 2, 2); color: white;" href="{{ home_url }}">Home</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="#">About Us</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="#">Our Services</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="{% url 'dashboard' %}">Dashboard</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="#">Contact Us</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="{{ logout_url }}">logout</a>
+    {% else %}
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="{{ home_url }}">Home</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="{{ register_url }}">Register</a>
+      <a style="background-color:  rgb(77, 2, 2); color: white; border-radius: 10px; padding-left: 10px; margin-bottom: 5px;" href="{{ login_url }}">login</a>
+    {% endif %}
+    </div>
+
+
+
+      <!-- Sliding text area -->
+      <div class="sliding-text">
+        <p>...Discovering the hidden star in every child</p>
+      </div>
+
+      <div class="logo">
+        <img src="{% static 'img/GDA logo 001.jpg'' %}" alt="Glorious Destiny Academy Logo"/>
+      </div>
+
+  </div>
+
+  
+</div>

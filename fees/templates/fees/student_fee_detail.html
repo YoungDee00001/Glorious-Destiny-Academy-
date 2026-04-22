@@ -1,0 +1,324 @@
+{% extends "ba_base.html" %}
+{% block content %}
+<!-- student_fee_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student.name }} - Fee Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .nav-links {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .nav-links a:hover {
+            background: #e7f3ff;
+        }
+        .student-info {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .student-info h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .info-item {
+            padding: 10px 0;
+        }
+        .info-item label {
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .info-item value {
+            color: #333;
+            font-size: 15px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-card h3 {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .summary-card .amount {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .summary-card.total .amount {
+            color: #333;
+        }
+        .summary-card.paid .amount {
+            color: #28a745;
+        }
+        .summary-card.balance .amount {
+            color: #dc3545;
+        }
+        .fees-table {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .fees-table h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge.paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge.unpaid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .badge.partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .badge.overdue {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .badge.due-soon {
+            background: #cce5ff;
+            color: #004085;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Fee Details</h1>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'unpaid_fees_list' %}">Unpaid Fees</a>
+            <a href="{% url 'paid_fees_list' %}">Paid Fees</a>
+            <a href="{% url 'create_fee_record' %}">Create Fee</a>
+        </div>
+
+        <!-- Student Information -->
+        <div class="student-info">
+            <h2>Student Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Full Name</label>
+                    <value>{{ student.name }}</value>
+                </div>
+                <div class="info-item">
+                    <label>Student ID</label>
+                    <value>{{ student.student_id }}</value>
+                </div>
+                <div class="info-item">
+                    <label>Class</label>
+                    <value>{{ student.class_name }}</value>
+                </div>
+                <div class="info-item">
+                    <label>Parent Email</label>
+                    <value>{{ student.parent_email }}</value>
+                </div>
+                <div class="info-item">
+                    <label>Parent Phone</label>
+                    <value>{{ student.parent_phone|default:"-" }}</value>
+                </div>
+                <div class="info-item">
+                    <label>Date Enrolled</label>
+                    <value>{{ student.date_enrolled|date:"M d, Y" }}</value>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card total">
+                <h3>Total Fees</h3>
+                <div class="amount">${{ total_fees }}</div>
+            </div>
+            <div class="summary-card paid">
+                <h3>Total Paid</h3>
+                <div class="amount">${{ total_paid }}</div>
+            </div>
+            <div class="summary-card balance">
+                <h3>Balance Due</h3>
+                <div class="amount">${{ total_balance }}</div>
+            </div>
+        </div>
+
+        <!-- Fees Table -->
+        <div class="fees-table">
+            <h2>Fee Records ({{ fees.count }})</h2>
+            {% if fees %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fee Type</th>
+                        <th>Academic Term</th>
+                        <th>Amount</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th>Due Date</th>
+                        <th>Payment Status</th>
+                        <th>Due Status</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td>{{ fee.fee_type }}</td>
+                        <td>{{ fee.academic_term|default:"-" }}</td>
+                        <td>${{ fee.fee_amount }}</td>
+                        <td>${{ fee.amount_paid }}</td>
+                        <td>
+                            {% if fee.balance > 0 %}
+                                <span style="color: #dc3545; font-weight: 600;">${{ fee.balance }}</span>
+                            {% else %}
+                                <span style="color: #28a745;">$0.00</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ fee.due_date|date:"M d, Y" }}</td>
+                        <td>
+                            {% if fee.payment_status == 'PAID' %}
+                                <span class="badge paid">Paid</span>
+                            {% elif fee.payment_status == 'PARTIAL' %}
+                                <span class="badge partial">Partial</span>
+                            {% else %}
+                                <span class="badge unpaid">Unpaid</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if fee.payment_status == 'PAID' %}
+                                <span class="badge paid">✓ Completed</span>
+                            {% elif fee.is_overdue %}
+                                <span class="badge overdue">{{ fee.days_overdue }} days overdue</span>
+                            {% elif fee.days_until_due == 0 %}
+                                <span class="badge overdue">Due Today</span>
+                            {% elif fee.days_until_due < 7 %}
+                                <span class="badge due-soon">{{ fee.days_until_due }} days left</span>
+                            {% else %}
+                                <span class="badge due-soon">{{ fee.days_until_due }} days left</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if fee.payment_date %}
+                                {{ fee.payment_date|date:"M d, Y" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-data">
+                <p>No fee records found for this student.</p>
+                <p style="margin-top: 10px;">
+                    <a href="{% url 'create_fee_record' %}" class="btn btn-primary">Create Fee Record</a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}

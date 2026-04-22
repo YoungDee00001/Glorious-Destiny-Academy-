@@ -1,0 +1,29 @@
+{% extends 'ba_base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>📋 Birthday Notifications Sent</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Student</th>
+            <th>Date Sent</th>
+            <th>Status</th>
+        </tr>
+
+        {% for n in notifications %}
+        <tr>
+            <td>{{ n.student }}</td>
+            <td>{{ n.notification_date }}</td>
+            <td>
+                {% if n.message_sent %}
+                    Sent
+                {% else %}
+                    Not Sent
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

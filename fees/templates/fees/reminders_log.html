@@ -1,0 +1,378 @@
+{% extends "ba_base.html" %}
+{% block content %}
+<!-- reminders_log.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminders Log - Fee Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .nav-links {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .nav-links a:hover {
+            background: #e7f3ff;
+        }
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+        }
+        .filter-btn:hover {
+            background: #f8f9fa;
+        }
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .reminders-table {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge.due-soon {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .badge.due-today {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .badge.overdue {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .badge.sent {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .view-btn {
+            padding: 4px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .view-btn:hover {
+            background: #0056b3;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-content pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .close-btn {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+        .close-btn:hover {
+            color: #000;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-row label {
+            font-weight: 600;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reminders Log</h1>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'unpaid_fees_list' %}">Unpaid Fees</a>
+            <a href="{% url 'paid_fees_list' %}">Paid Fees</a>
+            <a href="{% url 'reminders_log' %}">Reminders Log</a>
+            <a href="{% url 'create_fee_record' %}">Create Fee</a>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Filters -->
+        <div class="filters">
+            <h3 style="margin-bottom: 15px;">Filter by Type:</h3>
+            <div class="filter-buttons">
+                <a href="?" class="filter-btn {% if not reminder_type %}active{% endif %}">All</a>
+                <a href="?type=DUE_SOON" class="filter-btn {% if reminder_type == 'DUE_SOON' %}active{% endif %}">Due Soon</a>
+                <a href="?type=DUE_TODAY" class="filter-btn {% if reminder_type == 'DUE_TODAY' %}active{% endif %}">Due Today</a>
+                <a href="?type=OVERDUE" class="filter-btn {% if reminder_type == 'OVERDUE' %}active{% endif %}">Overdue</a>
+            </div>
+
+            <h3 style="margin: 15px 0;">Filter by Status:</h3>
+            <div class="filter-buttons">
+                <a href="?" class="filter-btn {% if not status %}active{% endif %}">All Status</a>
+                <a href="?status=SENT" class="filter-btn {% if status == 'SENT' %}active{% endif %}">Sent</a>
+                <a href="?status=FAILED" class="filter-btn {% if status == 'FAILED' %}active{% endif %}">Failed</a>
+            </div>
+
+            <form method="get" style="margin-top: 15px;">
+                <input type="text" name="search" placeholder="Search by student name or email..." class="search-box" value="{{ search_query }}">
+            </form>
+        </div>
+
+        <!-- Reminders Table -->
+        <div class="reminders-table">
+            <h2 style="margin-bottom: 20px;">All Reminders ({{ reminders.count }})</h2>
+            {% if reminders %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Student</th>
+                        <th>Type</th>
+                        <th>Recipient Email</th>
+                        <th>Status</th>
+                        <th>Subject</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reminder in reminders %}
+                    <tr>
+                        <td>{{ reminder.sent_at|date:"M d, Y h:i A" }}</td>
+                        <td>{{ reminder.fee_record.student.name }}</td>
+                        <td>
+                            {% if reminder.reminder_type == 'DUE_SOON' %}
+                                <span class="badge due-soon">Due Soon</span>
+                            {% elif reminder.reminder_type == 'DUE_TODAY' %}
+                                <span class="badge due-today">Due Today</span>
+                            {% elif reminder.reminder_type == 'OVERDUE' %}
+                                <span class="badge overdue">Overdue</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ reminder.recipient_email }}</td>
+                        <td>
+                            {% if reminder.status == 'SENT' %}
+                                <span class="badge sent">✓ Sent</span>
+                            {% else %}
+                                <span class="badge failed">✗ Failed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ reminder.email_subject }}</td>
+                        <td>
+                            <button class="view-btn" onclick="viewReminder({{ reminder.id }}, '{{ reminder.fee_record.student.name }}', '{{ reminder.email_subject }}', `{{ reminder.email_body|escapejs }}`, '{{ reminder.status }}', '{{ reminder.error_message|escapejs }}')">View</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-data">
+                <p>No reminders found.</p>
+                {% if search_query or reminder_type or status %}
+                <p><a href="{% url 'reminders_log' %}">Clear filters</a></p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- View Reminder Modal -->
+    <div id="reminderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div class="detail-row">
+                <label>Student:</label>
+                <div id="modalStudent"></div>
+            </div>
+            <div class="detail-row">
+                <label>Status:</label>
+                <div id="modalStatus"></div>
+            </div>
+            <div class="detail-row" id="errorSection" style="display: none;">
+                <label>Error Message:</label>
+                <div id="modalError" style="color: #dc3545;"></div>
+            </div>
+            <div class="detail-row">
+                <label>Email Content:</label>
+                <pre id="modalBody"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function viewReminder(id, student, subject, body, status, error) {
+            document.getElementById('reminderModal').style.display = 'block';
+            document.getElementById('modalTitle').textContent = subject;
+            document.getElementById('modalStudent').textContent = student;
+            document.getElementById('modalStatus').innerHTML = status === 'SENT' ? 
+                '<span class="badge sent">✓ Sent</span>' : 
+                '<span class="badge failed">✗ Failed</span>';
+            document.getElementById('modalBody').textContent = body;
+            
+            if (status === 'FAILED' && error) {
+                document.getElementById('errorSection').style.display = 'block';
+                document.getElementById('modalError').textContent = error;
+            } else {
+                document.getElementById('errorSection').style.display = 'none';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('reminderModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            var modal = document.getElementById('reminderModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}

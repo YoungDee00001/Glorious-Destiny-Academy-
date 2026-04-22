@@ -1,0 +1,68 @@
+{% extends "ba_base.html" %}
+{% block title %}Add Teacher{% endblock %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 700px;">
+    <div class="card shadow-sm">
+        <div class="card-header text-white" style="background-color: rgb(77,2,2);">
+            <h3>Add Teacher</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Name fields in one row -->
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>First Name</label>
+                        {{ form.first_name|add_class:"form-control" }}
+                        {% for error in form.first_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Middle Name</label>
+                        {{ form.middle_name|add_class:"form-control" }}
+                        {% for error in form.middle_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Surname</label>
+                        {{ form.surname|add_class:"form-control" }}
+                        {% for error in form.surname.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <!-- Other fields -->
+                {% for field in form %}
+                    {% if field.name not in "first_name middle_name surname" %}
+                        {% if field.name == "is_class_teacher" %}
+                            <div class="form-check mb-3">
+                                {{ field|add_class:"form-check-input" }}
+                                <label class="form-check-label">{{ field.label }}</label>
+                                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="mb-3">
+                                <label>{{ field.label }}</label>
+                                {{ field|add_class:"form-control" }}
+                                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <div>
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <a href="{% url 'teacher_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'SuperuserAdmin' %}" class="btn btn-primary">Back Home</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

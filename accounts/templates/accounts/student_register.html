@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white text-center py-3 rounded-top-4"
+                     style="background-color: rgb(77, 2, 2);">
+                    <h3 class="mb-0">New Student Registration</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- SHOW FORM ERRORS -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Please correct the errors below.
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Student Names -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Surname</label>
+                                {{ form.surname|add_class:"form-control" }}
+                                {% if form.surname.errors %}
+                                    <small class="text-danger">{{ form.surname.errors.0 }}</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">First Name</label>
+                                {{ form.first_name|add_class:"form-control" }}
+                                {% if form.first_name.errors %}
+                                    <small class="text-danger">{{ form.first_name.errors.0 }}</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Middle Name</label>
+                                {{ form.middle_name|add_class:"form-control" }}
+                                {% if form.middle_name.errors %}
+                                    <small class="text-danger">{{ form.middle_name.errors.0 }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- DOB -->
+                        <div class="mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth|add_class:"form-control" }}
+                            {% if form.date_of_birth.errors %}
+                                <small class="text-danger">{{ form.date_of_birth.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- State of Origin -->
+                        <div class="mb-3">
+                            <label class="form-label">State of Origin</label>
+                            {{ form.state_of_origin|add_class:"form-control" }}
+                            {% if form.state_of_origin.errors %}
+                                <small class="text-danger">{{ form.state_of_origin.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label">Home Address</label>
+                            {{ form.address|add_class:"form-control" }}
+                            {% if form.address.errors %}
+                                <small class="text-danger">{{ form.address.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Parent Phone Number -->
+                        <div class="mb-3">
+                            <label class="form-label">Parent Phone Number</label>
+                            {{ form.parent_phone|add_class:"form-control" }}
+                            {% if form.parent_phone.errors %}
+                                <small class="text-danger">{{ form.parent_phone.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Parent Email -->
+                        <div class="mb-3">
+                            <label class="form-label">Parent Email</label>
+                            {{ form.parent_email|add_class:"form-control" }}
+                            {% if form.parent_email.errors %}
+                                <small class="text-danger">{{ form.parent_email.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Class Applying -->
+                        <div class="mb-3">
+                            <label class="form-label">Class Applying For</label>
+                            {{ form.class_applying|add_class:"form-control" }}
+                            {% if form.class_applying.errors %}
+                                <small class="text-danger">{{ form.class_applying.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Child Picture -->
+                        <div class="mb-4">
+                            <label class="form-label">Child’s Passport Photo</label>
+                            {{ form.child_picture|add_class:"form-control" }}
+                            {% if form.child_picture.errors %}
+                                <small class="text-danger">{{ form.child_picture.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Previous School -->
+                        <div class="mb-3">
+                            <label class="form-label">Previous School</label>
+                            {{ form.previous_school|add_class:"form-control" }}
+                            {% if form.previous_school.errors %}
+                                <small class="text-danger">{{ form.previous_school.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Medical Conditions -->
+                        <div class="mb-3">
+                            <label class="form-label">Medical Conditions / Allergies</label>
+                            {{ form.medical_conditions|add_class:"form-control" }}
+                            {% if form.medical_conditions.errors %}
+                                <small class="text-danger">{{ form.medical_conditions.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="text-center mt-4">
+                            <button class="btn btn-lg px-5"
+                                    type="submit"
+                                    style="background-color: rgb(77, 2, 2); color: white;">
+                                Submit Registration
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

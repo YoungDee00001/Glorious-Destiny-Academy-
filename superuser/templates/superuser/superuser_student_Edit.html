@@ -1,0 +1,35 @@
+{% extends "ba_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="text-center fw-bold mb-4">Edit Student Information</h2>
+
+    <div class="card shadow p-4">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-bold">{{ field.label }}</label>
+                {{ field }}
+                <div class="text-danger">{{ field.errors }}</div>
+            </div>
+            {% endfor %}
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5">Save Changes</button>
+                <a href="{% url 'super_user_student_list' %}" class="btn btn-secondary ms-3">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+<a style="margin-top: 10px;" href="{% url 'SuperuserAdmin' %}" class="btn btn-primary">
+    <i class="bi bi-house-door"></i> Back Home
+</a>
+</div>
+{% endblock %}

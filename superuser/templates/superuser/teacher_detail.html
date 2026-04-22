@@ -1,0 +1,31 @@
+{% extends "ba_base.html" %}
+{% block title %}Teacher Details{% endblock %}
+{% block content %}
+
+<h3>{{ teacher.user.get_full_name }} ({{ teacher.employee_id }})</h3>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <h5>Employment Info</h5>
+        <p><strong>Status:</strong> {{ teacher.employment_status }}</p>
+        <p><strong>Joined:</strong> {{ teacher.date_of_joining }}</p>
+        <p><strong>Designation:</strong> {{ teacher.designation }}</p>
+        <p><strong>Department:</strong> {{ teacher.department }}</p>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Qualification</h5>
+        <p><strong>Highest Qualification:</strong> {{ teacher.highest_qualification }}</p>
+        <p><strong>Experience:</strong> {{ teacher.teaching_experience_years }} years</p>
+    </div>
+</div>
+
+<a href="{% url 'teacher_edit' teacher.id %}" class="btn btn-warning mt-3">Edit</a>
+<a href="{% url 'teacher_list' %}" class="btn btn-secondary mt-3">Back to List</a>
+
+<a style="margin-top: 10px;" href="{% url 'SuperuserAdmin' %}" class="btn btn-primary">
+    <i class="bi bi-house-door"></i> Back Home
+</a>
+
+{% endblock %}

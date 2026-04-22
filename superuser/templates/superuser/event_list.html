@@ -1,0 +1,38 @@
+{% extends "ba_base.html" %}
+{% block title %}School Events{% endblock %}
+
+{% block content %}
+<h2>School Events</h2>
+<a href="{% url 'event_create' %}" class="btn btn-success mb-3">Add Event</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Academic Year</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.get_event_type_display }}</td>
+            <td>{{ event.academic_year }}</td>
+            <td>{{ event.start_date }}</td>
+            <td>{{ event.end_date }}</td>
+            <td>
+                <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary btn-sm">View</a>
+                <a href="{% url 'event_update' event.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center">No events found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

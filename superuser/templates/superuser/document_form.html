@@ -1,0 +1,18 @@
+{% extends "ba_base.html" %}
+{% block title %}Upload Document{% endblock %}
+{% block content %}
+
+<h3>{{ view.object|default:'Upload New Document' }}</h3>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button class="btn btn-success" type="submit">Save</button>
+    <a class="btn btn-secondary" href="{% url 'document_list' %}">Cancel</a>
+</form>
+<a style="margin-top: 10px;" href="{% url 'SuperuserAdmin' %}" class="btn btn-primary">
+    <i class="bi bi-house-door"></i> Back Home
+</a>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "ba_base.html" %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ event.title }}</h2>
+<p><strong>Type:</strong> {{ event.get_event_type_display }}</p>
+<p><strong>Academic Year:</strong> {{ event.academic_year }}</p>
+<p><strong>Start:</strong> {{ event.start_date }} | <strong>End:</strong> {{ event.end_date }}</p>
+<p><strong>Venue:</strong> {{ event.venue }}</p>
+<p><strong>Organizers:</strong> {{ event.organizers }}</p>
+<p><strong>Description:</strong> {{ event.description }}</p>
+
+{% if event.cover_image %}
+    <img src="{{ event.cover_image.url }}" class="img-fluid mb-3" alt="Cover Image">
+{% endif %}
+
+<hr>
+<h4>Gallery</h4>
+<a href="{% url 'event_gallery_upload' event.pk %}" class="btn btn-primary mb-2">Upload Photo</a>
+<div class="row">
+    {% for photo in event.gallery.all %}
+        <div class="col-md-3 mb-2">
+            <img src="{{ photo.image.url }}" class="img-thumbnail">
+            <p>{{ photo.caption }}</p>
+        </div>
+    {% empty %}
+        <p>No photos yet.</p>
+    {% endfor %}
+</div>
+
+<hr>
+<h4>Documents</h4>
+<a href="{% url 'event_document_upload' event.pk %}" class="btn btn-primary mb-2">Upload Document</a>
+<ul>
+    {% for doc in event.documents.all %}
+        <li><a href="{{ doc.document_file.url }}" target="_blank">{{ doc.document_title }}</a></li>
+    {% empty %}
+        <li>No documents yet.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'event_list' %}" class="btn btn-secondary mt-3">Back to Events</a>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'ba_base.html' %}
+{% load static %}
+
+{% block title %}
+Superuser List View
+{% endblock %}
+
+{% block page %}
+Superuser List View
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fullname</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Date Joined</th>
+                    <th scope="col">Last Login</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.created_at|date:"M d, Y" }}</td>
+                    <td>{{ user.last_login|date:"M d, Y H:i" }}</td>
+                    <td class="text-center">
+                    <a href="{% url 'superuser_detail' user.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> View
+                    </a> 
+                    <a href="{% url 'superuser_update' user.id %}" class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-eye"></i> Update
+                    </a>
+                    <a href="{% url 'superuser_delete' user.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                    No superusers found.
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-outline-primary" href="{% url 'SuperuserAdmin' %}">Back Home</a>
+    </div>
+</div>
+
+
+
+{% endblock %}
+

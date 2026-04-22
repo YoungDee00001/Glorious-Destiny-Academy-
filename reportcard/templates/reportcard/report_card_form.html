@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Card Form{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                max-width: 100% !important;
+            }
+            .student-info {
+                flex-direction: column;
+            }
+            .student-info div {
+                margin-bottom: 10px;
+            }
+            .student-info input {
+                width: 100% !important;
+            }
+            /* Make tables scrollable on small screens so they don't mess up the layout */
+            .table-container {
+                width: 100%;
+                overflow-x: auto;
+            }
+            .bottom-section {
+                flex-direction: column !important;
+            }
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 0;
+        }
+
+        /* Back Button Style */
+        .back-nav {
+            margin-bottom: 10px;
+        }
+        .btn-back {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .report-card {
+            border: 4px solid black;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid black;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 3px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+        
+        .header .term-line {
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .student-info div {
+            flex: 1;
+        }
+        
+        .student-info label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .student-info input {
+            border: none;
+            border-bottom: 1px solid black;
+            width: 70%;
+            outline: none;
+            padding: 2px;
+            font-size: 14px;
+        }
+        
+        .attendance-section {
+            display: flex;
+            gap: 0;
+            margin-bottom: 12px;
+        }
+        
+        .attendance-box {
+            flex: 1;
+            border: 2px solid black;
+            padding: 8px;
+            font-size: 11px;
+        }
+        
+        .attendance-box:not(:last-child) {
+            border-right: none;
+        }
+        
+        .attendance-box strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .attendance-box input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #666;
+            outline: none;
+            padding: 2px;
+        }
+        
+        .grading-system {
+            margin-bottom: 12px;
+        }
+        
+        .grading-system h3 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .grading-row {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2px;
+        }
+        
+        .grade-box {
+            flex: 1;
+            border: 1px solid black;
+            padding: 4px 6px;
+            font-size: 10px;
+        }
+        
+        .grade-box:not(:last-child) {
+            border-right: none;
+        }
+        
+        .performance-section h3 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        
+        table th,
+        table td {
+            border: 1px solid black;
+            padding: 4px;
+            text-align: center;
+            font-size: 10px;
+        }
+        
+        table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        table td:first-child {
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        table input {
+            width: 100%;
+            border: none;
+            text-align: center;
+            outline: none;
+            font-size: 10px;
+            padding: 2px;
+        }
+        
+        .bottom-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .affective-section,
+        .psychomotor-section {
+            flex: 1;
+        }
+        
+        .section-title {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .rating-scale {
+            font-size: 9px;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        .rating-scale div {
+            margin: 1px 0;
+        }
+        
+        .times-begins {
+            margin-top: 10px;
+            font-size: 10px;
+        }
+        
+        .times-begins strong {
+            font-weight: bold;
+        }
+        
+        .times-begins input {
+            width: 100px;
+            border: none;
+            border-bottom: 1px solid black;
+            outline: none;
+        }
+        
+        .comments-section {
+            margin-bottom: 10px;
+        }
+        
+        .comment-box {
+            margin-bottom: 12px;
+        }
+        
+        .comment-box label {
+            font-size: 11px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .comment-box textarea {
+            width: 100%;
+            border: 1px solid black;
+            padding: 5px;
+            outline: none;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            min-height: 50px;
+        }
+        
+        .signature-line {
+            text-align: right;
+            margin-top: 5px;
+            font-size: 10px;
+        }
+        
+        .signature-line span {
+            display: inline-block;
+            width: 150px;
+            border-bottom: 1px solid black;
+            margin-left: 5px;
+        }
+        
+        .action-buttons {
+            padding: 15px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .btn-print {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-save {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .action-buttons, .back-nav {
+                display: none;
+            }
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container back-nav">
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="container">
+        <form method="post" id="reportCardForm">
+            {% csrf_token %}
+            
+            <div class="report-card">
+                <div class="header">
+                    <h1>GLORIOUS DESTINY ACADEMY</h1>
+                    <p>Beside Community Pry School Adeba</p>
+                    <p>Ibeju Lekki Lagos.</p>
+                    <p class="term-line">CONTINUOUS ASSESSMENT REPORT FOR..........TERM</p>
+                </div>
+                
+                <div class="student-info">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="student_name" value="{{ student_name|default:'' }}" required>
+                    </div>
+                    <div>
+                        <label>Class:</label>
+                        <input type="text" name="student_class" value="{{ student_class|default:'' }}" required>
+                    </div>
+                </div>
+                
+                <div class="attendance-section">
+                    <div class="attendance-box">
+                        <strong>School Attendance</strong>
+                        <input type="text" name="school_attendance" value="{{ school_attendance|default:'' }}">
+                    </div>
+                    <div class="attendance-box">
+                        <strong>No. of time present</strong>
+                        <input type="number" name="times_present" value="{{ times_present|default:'' }}">
+                    </div>
+                    <div class="attendance-box">
+                        <strong>No. of time absent</strong>
+                        <input type="number" name="times_absent" value="{{ times_absent|default:'' }}">
+                    </div>
+                </div>
+                
+                <div class="grading-system">
+                    <h3>GRADING SYSTEM</h3>
+                    <div class="grading-row">
+                        <div class="grade-box"><strong>1. 80-100 = A1</strong> Distinction</div>
+                        <div class="grade-box"><strong>2. 70-79 = B2</strong> V. Good</div>
+                        <div class="grade-box"><strong>3. 60-69 = B3</strong> Upper Merit</div>
+                    </div>
+                    <div class="grading-row">
+                        <div class="grade-box"><strong>4. 55-59 = C4</strong> Merit</div>
+                        <div class="grade-box"><strong>5. 50-54 = C5</strong> Credit</div>
+                        <div class="grade-box"><strong>6. 60-54 C6</strong> Credit</div>
+                    </div>
+                    <div class="grading-row">
+                        <div class="grade-box"><strong>7. 50-59 D7</strong> Pass</div>
+                        <div class="grade-box"><strong>8. 40-44 E8</strong> Pass</div>
+                        <div class="grade-box"><strong>9. 0-39 F9</strong> Failed</div>
+                    </div>
+                </div>
+                
+                <div class="performance-section">
+                    <h3>COGNITIVE PERFORMANCE & ATTENDANCE</h3>
+                    <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th rowspan="2">SUBJECTS</th>
+                                <th>CA 1<br>10</th>
+                                <th>CA 2<br>10</th>
+                                <th>CA 3<br>10</th>
+                                <th>Exam<br>70</th>
+                                <th>Total<br>100</th>
+                                <th>Grade</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                            <tr>
+                                <td>{{ subject.name }}</td>
+                                <td><input type="number" name="{{ subject.id }}_ca1" value="{{ subject.ca1|default:'' }}" max="10"></td>
+                                <td><input type="number" name="{{ subject.id }}_ca2" value="{{ subject.ca2|default:'' }}" max="10"></td>
+                                <td><input type="number" name="{{ subject.id }}_ca3" value="{{ subject.ca3|default:'' }}" max="10"></td>
+                                <td><input type="number" name="{{ subject.id }}_exam" value="{{ subject.exam|default:'' }}" max="70"></td>
+                                <td><input type="number" name="{{ subject.id }}_total" value="{{ subject.total|default:'' }}" readonly></td>
+                                <td><input type="text" name="{{ subject.id }}_grade" value="{{ subject.grade|default:'' }}" maxlength="2"></td>
+                                <td><input type="text" name="{{ subject.id }}_remark" value="{{ subject.remark|default:'' }}"></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td>English Language</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Mathematics</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Quantitative Reasoning</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Verbal Reasoning/Phonics</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Home Economics</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Moral Instruction</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Physical/Health Education</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Basic Science</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Basic Tech</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Computer Science</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Agric Science</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Diction</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>CRK</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Current Affairs</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>French</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            <tr><td>Yoruba</td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="10"></td><td><input type="number" max="70"></td><td><input type="number" readonly></td><td><input type="text" maxlength="2"></td><td><input type="text"></td></tr>
+                            {% endfor %}
+                            <tr style="background-color: #f0f0f0;">
+                                <td><strong>Total</strong></td>
+                                <td colspan="7"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                
+                <div class="bottom-section">
+                    <div class="affective-section">
+                        <div class="section-title">AFFECTIVE DISPOSITION ( 5 4 3 2 1 )</div>
+                        <table>
+                            <tr><td>Punctuality</td><td style="width: 40px;"><input type="number" name="aff_punctuality" min="1" max="5"></td></tr>
+                            <tr><td>Attentiveness in class</td><td><input type="number" name="aff_attentiveness" min="1" max="5"></td></tr>
+                            <tr><td>Politeness</td><td><input type="number" name="aff_politeness" min="1" max="5"></td></tr>
+                            <tr><td>Neatness</td><td><input type="number" name="aff_neatness" min="1" max="5"></td></tr>
+                            <tr><td>Initiative, Ability</td><td><input type="number" name="aff_initiative" min="1" max="5"></td></tr>
+                            <tr><td>Perseverance</td><td><input type="number" name="aff_perseverance" min="1" max="5"></td></tr>
+                            <tr><td>Leadership</td><td><input type="number" name="aff_leadership" min="1" max="5"></td></tr>
+                            <tr><td>Honesty</td><td><input type="number" name="aff_honesty" min="1" max="5"></td></tr>
+                            <tr><td>Self Control</td><td><input type="number" name="aff_self_control" min="1" max="5"></td></tr>
+                            <tr><td>Relationship with others</td><td><input type="number" name="aff_relationship" min="1" max="5"></td></tr>
+                            <tr><td>Emotional Stability</td><td><input type="number" name="aff_emotional" min="1" max="5"></td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="psychomotor-section">
+                        <div class="section-title">PSYCHOMOTOR SKILL</div>
+                        <table>
+                            <tr><td>Handwriting</td><td style="width: 40px;"><input type="number" name="psy_handwriting" min="1" max="5"></td></tr>
+                            <tr><td>Drawing & Painting</td><td><input type="number" name="psy_drawing" min="1" max="5"></td></tr>
+                            <tr><td>Craft/Tools Handling</td><td><input type="number" name="psy_craft" min="1" max="5"></td></tr>
+                            <tr><td>Sports & Games</td><td><input type="number" name="psy_sports" min="1" max="5"></td></tr>
+                            <tr><td>Music</td><td><input type="number" name="psy_music" min="1" max="5"></td></tr>
+                            <tr><td>Verbal Fluency</td><td><input type="number" name="psy_verbal" min="1" max="5"></td></tr>
+                        </table>
+                        
+                        <div class="rating-scale">
+                            <strong>Rating Scale</strong>
+                            <div>5 = Excellent</div>
+                            <div>4 = V. Good</div>
+                            <div>3 = Good</div>
+                            <div>2 = Fair</div>
+                            <div>1 = Poor</div>
+                        </div>
+                        
+                        <div class="times-begins">
+                            <strong>No.Times Begins:</strong>
+                            <input type="text" name="times_begins">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <div class="comment-box">
+                        <label>Class Teacher's Comment:</label>
+                        <textarea name="teacher_comment">{{ teacher_comment|default:'' }}</textarea>
+                        <div class="signature-line">Signature: <span></span></div>
+                    </div>
+                    
+                    <div class="comment-box">
+                        <label>Headmaster's/Headmistress's Comment:</label>
+                        <textarea name="headmaster_comment">{{ headmaster_comment|default:'' }}</textarea>
+                        <div class="signature-line">Signature: <span></span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-save">Save Report Card</button>
+                <button type="button" class="btn btn-print" onclick="window.print()">Print Report Card</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            if (input.name.includes('_ca') || input.name.includes('_exam')) {
+                input.addEventListener('input', function() {
+                    const row = this.closest('tr');
+                    const ca1 = parseFloat(row.querySelector('[name$="_ca1"]')?.value) || 0;
+                    const ca2 = parseFloat(row.querySelector('[name$="_ca2"]')?.value) || 0;
+                    const ca3 = parseFloat(row.querySelector('[name$="_ca3"]')?.value) || 0;
+                    const exam = parseFloat(row.querySelector('[name$="_exam"]')?.value) || 0;
+                    
+                    const total = ca1 + ca2 + ca3 + exam;
+                    const totalInput = row.querySelector('[name$="_total"]');
+                    const gradeInput = row.querySelector('[name$="_grade"]');
+                    
+                    if (totalInput) { totalInput.value = total.toFixed(1); }
+                    
+                    if (gradeInput) {
+                        let grade = '';
+                        if (total >= 80) grade = 'A';
+                        else if (total >= 70) grade = 'B';
+                        else if (total >= 60) grade = 'C';
+                        else if (total >= 50) grade = 'D';
+                        else if (total >= 40) grade = 'E';
+                        else grade = 'F';
+                        gradeInput.value = grade;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

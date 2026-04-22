@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f3f4f6; 
+            color: #1f2937;
+        }
+        .sidebar-bg { background-color: rgb(77, 2, 2); }
+        .white-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .nav-item {
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .crimson-text { color: rgb(77, 2, 2); }
+        .crimson-bg { background-color: rgb(77, 2, 2); }
+        .accent-border { border-left: 4px solid rgb(77, 2, 2); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 sidebar-bg text-white flex flex-col fixed h-full shadow-2xl">
+            <div class="p-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                        <i data-lucide="briefcase" class="text-[rgb(77,2,2)] w-5 h-5"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight uppercase">Staff<span class="font-light">OS</span></span>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1">
+                <a href="#" class="nav-item active flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Welcome
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="presentation" class="w-4 h-4"></i> Teaching Summary
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="users" class="w-4 h-4"></i> Classes & Subjects
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="check-square" class="w-4 h-4"></i> Academic Tasks
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="mail" class="w-4 h-4"></i> Messages
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="megaphone" class="w-4 h-4"></i> Announcements
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <i data-lucide="calendar-check" class="w-4 h-4"></i> Events
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-medium mt-10">
+                    <i data-lucide="user-circle" class="w-4 h-4"></i> Profile
+                </a>
+            </nav>
+
+            <div class="p-6 mt-auto border-t border-white/10 bg-black/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20 bg-white/10 flex items-center justify-center font-bold">DT</div>
+                    <div>
+                        <p class="text-sm font-bold">Dr. Thorne</p>
+                        <p class="text-[10px] opacity-60">Senior Lecturer</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 ml-64 p-10 bg-slate-50">
+            <header class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-xs uppercase tracking-[0.2em] font-bold text-gray-400 mb-1">Faculty Access</h2>
+                    <h3 class="text-3xl font-extrabold text-gray-900 italic">Professor's Command Center</h3>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Term:</span>
+                        <span class="text-xs font-bold crimson-text">Spring 2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="white-card p-6 rounded-2xl accent-border">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Teaching Load</p>
+                    <div class="flex items-center justify-between mt-3">
+                        <h4 class="text-4xl font-black crimson-text">14</h4>
+                        <span class="text-xs font-bold text-gray-400">Hours / Week</span>
+                    </div>
+                </div>
+                <div class="white-card p-6 rounded-2xl">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Students Enrolled</p>
+                    <h4 class="text-4xl font-black text-gray-800 mt-3">{{ student_count }}</h4>
+                    <p class="text-[10px] text-emerald-600 font-bold mt-2 uppercase tracking-tight">Across 4 Sections</p>
+                </div>
+                <div class="white-card p-6 rounded-2xl">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Pending Gradings</p>
+                    <h4 class="text-4xl font-black text-amber-600 mt-3">32</h4>
+                    <p class="text-xs text-gray-500 mt-2 font-medium italic underline underline-offset-4">Due by Friday</p>
+                </div>
+                <div class="white-card p-6 rounded-2xl crimson-bg text-white">
+                    <p class="text-xs font-bold opacity-70 uppercase tracking-widest">Research Status</p>
+                    <h4 class="text-2xl font-bold mt-4 flex items-center gap-2">
+                        <i data-lucide="flask-conical" class="w-6 h-6"></i> On Track
+                    </h4>
+                </div>
+            </div>
+
+
+
+            <!-- counting boys and girls in class is here -->
+
+            <div class="white-card rounded-2xl overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h4 class="font-bold text-gray-800 uppercase text-xs tracking-wider">Class Population Overview</h4>
+                    <span class="text-[10px] font-bold bg-slate-200 px-2 py-1 rounded text-slate-600">Total Classes: {{ total_classes }}</span>
+                </div>
+                <div class="p-0 overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="text-[10px] uppercase font-bold text-gray-400 bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4">Class Name</th>
+                                <th class="px-6 py-4">Total Students</th>
+                                <th class="px-6 py-4 text-blue-600">Boys</th>
+                                <th class="px-6 py-4 text-pink-600">Girls</th>
+                                <th class="px-6 py-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for class in classes_data %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <p class="font-bold text-sm text-gray-800">{{ class.class_name }}</p>
+                                    <p class="text-[10px] text-gray-500 font-medium italic">{{ class.class_key|title }}</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm font-black text-gray-800">{{ class.total_students }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700">
+                                        {{ class.boys_count }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-50 text-pink-700">
+                                        {{ class.girls_count }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <button class="text-[10px] font-black crimson-text border border-[rgb(77,2,2)] px-3 py-1 rounded hover:bg-[rgb(77,2,2)] hover:text-white transition-all uppercase">
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center text-gray-400 italic text-sm">
+                                    No active classes found for this term.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="white-card rounded-2xl overflow-hidden">
+                        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <h4 class="font-bold text-gray-800 uppercase text-xs tracking-wider">Active Classes & Subjects</h4>
+                            <button class="text-xs font-bold crimson-text hover:underline">View All Schedule</button>
+                        </div>
+                        <div class="p-0">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] uppercase font-bold text-gray-400 bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4">Subject Name</th>
+                                        <th class="px-6 py-4">Venue</th>
+                                        <th class="px-6 py-4">Next Lecture</th>
+                                        <th class="px-6 py-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <p class="font-bold text-sm text-gray-800">Advanced AI Ethics</p>
+                                            <p class="text-[10px] text-gray-500 font-medium italic">CS-502 • Post Grad</p>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600 font-medium">Room 102A</td>
+                                        <td class="px-6 py-4">
+                                            <p class="text-sm font-bold text-gray-800">Tue, 10:00 AM</p>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <button class="text-xs font-bold crimson-bg text-white px-4 py-1.5 rounded-lg shadow-md">Roll Call</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <p class="font-bold text-sm text-gray-800">Systems Architecture</p>
+                                            <p class="text-[10px] text-gray-500 font-medium italic">CS-410 • Undergrad</p>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600 font-medium">Virtual Lab 3</td>
+                                        <td class="px-6 py-4">
+                                            <p class="text-sm font-bold text-gray-800">Wed, 02:30 PM</p>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <button class="text-xs font-bold crimson-bg text-white px-4 py-1.5 rounded-lg shadow-md">Roll Call</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="white-card p-6 rounded-2xl">
+                        <h4 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Academic Tasks</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-gray-300 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="p-2 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="file-warning" class="w-5 h-5"></i></div>
+                                    <span class="text-sm font-bold text-gray-700">Submit Final Exam Papers for Moderation</span>
+                                </div>
+                                <span class="text-[10px] font-black text-amber-600">URGENT</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-gray-300 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+                                    <span class="text-sm font-bold text-gray-700">Update Syllabus for Semester 2</span>
+                                </div>
+                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Done</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="white-card p-6 rounded-2xl">
+                        <h4 class="font-bold text-gray-800 mb-6 flex items-center justify-between">
+                            Staff Notifications
+                            <span class="bg-red-100 text-[rgb(77,2,2)] text-[10px] px-2 py-0.5 rounded-full">3 New</span>
+                        </h4>
+                        <div class="space-y-6">
+                            <div class="relative pl-6 border-l-2 crimson-border">
+                                <p class="text-xs font-black text-gray-800 uppercase">HOD Meeting</p>
+                                <p class="text-xs text-gray-500 mt-1">Discussion on departmental funding at 4:00 PM.</p>
+                                <p class="text-[10px] text-gray-400 mt-2 italic font-medium">Sent 15m ago</p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-gray-200">
+                                <p class="text-xs font-black text-gray-800 uppercase">Maintenance Update</p>
+                                <p class="text-xs text-gray-500 mt-1">Staff WiFi will be down for 30 minutes tonight.</p>
+                                <p class="text-[10px] text-gray-400 mt-2 italic font-medium">Sent 2h ago</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="white-card p-6 rounded-2xl bg-[rgb(77,2,2)] text-white relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h4 class="text-xs font-bold opacity-70 uppercase tracking-widest">Next Faculty Event</h4>
+                            <p class="text-lg font-black mt-2">Senate Research Symposium</p>
+                            <p class="text-xs mt-1 font-medium opacity-80">January 15th • Conference Center</p>
+                        </div>
+                        <i data-lucide="award" class="absolute -bottom-4 -right-4 w-24 h-24 opacity-10"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

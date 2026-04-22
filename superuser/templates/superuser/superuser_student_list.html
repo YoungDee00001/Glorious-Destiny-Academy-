@@ -1,0 +1,71 @@
+{% extends 'ba_base.html' %}
+{% load static %}
+
+{% block title %}
+Superuser Student List View
+{% endblock %}
+
+{% block page %}
+Superuser Student List View
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="mb-4 text-center fw-bold">Student Registration List</h2>
+
+    <div class="text-end mb-3">
+        <a href="{% url 'student_register' %}" class="btn btn-success">+ Add New Student</a>
+    </div>
+
+    {% if students %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Registration Number</th>
+                        <th>Full Name</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                        <th>Date Registered</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ student.registration_number }}</td>
+                        <td>{{ student.surname }} {{ student.first_name }} {{ student.middle_name }}</td>
+                        <td>{{ student.class_applying }}</td>
+                        <td>
+                            {% if student.status == "approved" %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif student.status == "pending" %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif student.status == "rejected" %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% elif student.status == "admitted" %}
+                                <span class="badge bg-primary">Admitted</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ student.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'studentreg_detail' student.id %}" class="btn btn-sm btn-info">View</a>
+                            <a href="{% url 'student_update' student.id %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'student_delete' student.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted py-5">No student registrations yet.</p>
+    {% endif %}
+<a style="margin-top: 10px;" href="{% url 'SuperuserAdmin' %}" class="btn btn-primary">
+    <i class="bi bi-house-door"></i> Back Home
+</a>
+</div>
+{% endblock %}

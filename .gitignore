@@ -1,0 +1,7 @@
+*.mp4
+*.jpg
+*.jpeg
+*.png
+__pycache__/
+*.pyc
+db.sqlite3

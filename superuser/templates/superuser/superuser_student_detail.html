@@ -1,0 +1,44 @@
+{% extends "ba_base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="mb-4 fw-bold text-center">Student Details</h2>
+
+    <div class="card shadow p-4">
+
+        <h4 class="text-center mb-3">
+            {{ student.surname }} {{ student.first_name }} {{ student.middle_name }}
+        </h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Registration No:</strong> {{ student.registration_number }}</p>
+                <p><strong>Date of Birth:</strong> {{ student.date_of_birth }}</p>
+                <p><strong>State of Origin:</strong> {{ student.state_of_origin }}</p>
+                <p><strong>Class Applying For:</strong> {{ student.class_applying }}</p>
+                <p><strong>Address:</strong> {{ student.address }}</p>
+                <p><strong>Previous School:</strong> {{ student.previous_school }}</p>
+                <p><strong>Medical Conditions:</strong> {{ student.medical_conditions }}</p>
+            </div>
+
+            <div class="col-md-6 text-center">
+                {% if student.child_picture %}
+                    <img src="{{ student.child_picture.url }}" alt="Child Picture"
+                         class="img-thumbnail mb-3" width="200">
+                {% else %}
+                    <p class="text-muted">No picture uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{% url 'student_update' student.id %}" class="btn btn-warning me-2">Edit</a>
+            <a href="{% url 'student_delete' student.id %}" class="btn btn-danger me-2">Delete</a>
+            <a href="{% url 'super_user_student_list' %}" class="btn btn-secondary">Back</a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

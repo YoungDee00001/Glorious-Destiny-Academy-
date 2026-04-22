@@ -1,0 +1,179 @@
+{% extends 'ba_base.html' %}
+
+{% block title %}Report Card - {{ student.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    @media print {
+        .no-print { display: none; }
+        body { background: white; }
+        .container { max-width: 100%; }
+    }
+    
+    .report-card {
+        border: 4px solid black;
+        padding: 20px;
+        background: white;
+    }
+    
+    .header {
+        text-align: center;
+        border-bottom: 3px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .report-table th,
+    .report-table td {
+        border: 1px solid black;
+        padding: 5px;
+        font-size: 11px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="no-print mb-3">
+        <a href="{% url 'report_card_list' %}" class="btn btn-secondary">Back to List</a>
+        <a href="{% url 'edit_report_card' report_card.pk %}" class="btn btn-warning">Edit</a>
+        <button onclick="window.print()" class="btn btn-primary">Print</button>
+    </div>
+
+    <div class="report-card">
+        <!-- Header -->
+        <div class="header">
+            <h1 style="font-size: 28px; font-weight: bold;">GLORIOUS DESTINY ACADEMY</h1>
+            <p>Beside Community Pry School Adeba</p>
+            <p>Ibeju Lekki Lagos.</p>
+            <p style="font-weight: bold;">CONTINUOUS ASSESSMENT REPORT FOR {{ term.get_term_display|upper }}</p>
+        </div>
+
+        <!-- Student Info -->
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <div><strong>Name:</strong> {{ student.get_full_name }}</div>
+            <div><strong>Class:</strong> {{ student.student_class }}</div>
+        </div>
+
+        <!-- Attendance -->
+        <div style="display: flex; gap: 0; margin-bottom: 15px;">
+            <div style="border: 2px solid black; padding: 8px; flex: 1;">
+                <strong>School Attendance</strong><br>
+                {{ report_card.times_school_opened }}
+            </div>
+            <div style="border: 2px solid black; padding: 8px; flex: 1; border-left: none;">
+                <strong>No. of time present</strong><br>
+                {{ report_card.times_present }}
+            </div>
+            <div style="border: 2px solid black; padding: 8px; flex: 1; border-left: none;">
+                <strong>No. of time absent</strong><br>
+                {{ report_card.times_absent }}
+            </div>
+        </div>
+
+        <!-- Grading System -->
+        <h6 style="font-weight: bold; margin-bottom: 5px;">GRADING SYSTEM</h6>
+        <div style="font-size: 10px; margin-bottom: 15px;">
+            <strong>1.</strong> 80-100 = A1 Distinction | 
+            <strong>2.</strong> 70-79 = B2 V. Good | 
+            <strong>3.</strong> 60-69 = B3 Upper Merit | 
+            <strong>4.</strong> 55-59 = C4 Merit | 
+            <strong>5.</strong> 50-54 = C5 Credit | 
+            <strong>6.</strong> 40-49 = E Pass | 
+            <strong>7.</strong> 0-39 = F Failed
+        </div>
+
+        <!-- Subject Scores -->
+        <h6 style="font-weight: bold;">COGNITIVE PERFORMANCE & ATTENDANCE</h6>
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>SUBJECTS</th>
+                    <th>CA 1<br>10</th>
+                    <th>CA 2<br>10</th>
+                    <th>CA 3<br>10</th>
+                    <th>Exam<br>70</th>
+                    <th>Total<br>100</th>
+                    <th>Grade</th>
+                    <th>Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in subject_scores %}
+                <tr>
+                    <td><strong>{{ score.subject.name }}</strong></td>
+                    <td style="text-align: center;">{{ score.ca1 }}</td>
+                    <td style="text-align: center;">{{ score.ca2 }}</td>
+                    <td style="text-align: center;">{{ score.ca3 }}</td>
+                    <td style="text-align: center;">{{ score.exam }}</td>
+                    <td style="text-align: center;"><strong>{{ score.total }}</strong></td>
+                    <td style="text-align: center;"><strong>{{ score.grade }}</strong></td>
+                    <td>{{ score.remark }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Affective & Psychomotor -->
+        <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+                <h6 style="font-weight: bold;">AFFECTIVE DISPOSITION (1-5)</h6>
+                <table class="report-table">
+                    <tr><td>Punctuality</td><td style="width: 40px; text-align: center;">{{ report_card.affective.punctuality }}</td></tr>
+                    <tr><td>Attentiveness</td><td style="text-align: center;">{{ report_card.affective.attentiveness }}</td></tr>
+                    <tr><td>Politeness</td><td style="text-align: center;">{{ report_card.affective.politeness }}</td></tr>
+                    <tr><td>Neatness</td><td style="text-align: center;">{{ report_card.affective.neatness }}</td></tr>
+                    <tr><td>Initiative</td><td style="text-align: center;">{{ report_card.affective.initiative }}</td></tr>
+                    <tr><td>Perseverance</td><td style="text-align: center;">{{ report_card.affective.perseverance }}</td></tr>
+                    <tr><td>Leadership</td><td style="text-align: center;">{{ report_card.affective.leadership }}</td></tr>
+                    <tr><td>Honesty</td><td style="text-align: center;">{{ report_card.affective.honesty }}</td></tr>
+                    <tr><td>Self Control</td><td style="text-align: center;">{{ report_card.affective.self_control }}</td></tr>
+                    <tr><td>Relationship</td><td style="text-align: center;">{{ report_card.affective.relationship_with_others }}</td></tr>
+                    <tr><td>Emotional Stability</td><td style="text-align: center;">{{ report_card.affective.emotional_stability }}</td></tr>
+                </table>
+            </div>
+            <div style="flex: 1;">
+                <h6 style="font-weight: bold;">PSYCHOMOTOR SKILL (1-5)</h6>
+                <table class="report-table">
+                    <tr><td>Handwriting</td><td style="width: 40px; text-align: center;">{{ report_card.psychomotor.handwriting }}</td></tr>
+                    <tr><td>Drawing & Painting</td><td style="text-align: center;">{{ report_card.psychomotor.drawing_painting }}</td></tr>
+                    <tr><td>Craft/Tools</td><td style="text-align: center;">{{ report_card.psychomotor.craft_tools }}</td></tr>
+                    <tr><td>Sports & Games</td><td style="text-align: center;">{{ report_card.psychomotor.sports_games }}</td></tr>
+                    <tr><td>Music</td><td style="text-align: center;">{{ report_card.psychomotor.music }}</td></tr>
+                    <tr><td>Verbal Fluency</td><td style="text-align: center;">{{ report_card.psychomotor.verbal_fluency }}</td></tr>
+                </table>
+                <div style="font-size: 10px; margin-top: 10px;">
+                    <strong>Rating Scale:</strong><br>
+                    5 = Excellent | 4 = V. Good | 3 = Good | 2 = Fair | 1 = Poor
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments -->
+        <div style="margin-bottom: 10px;">
+            <strong>Class Teacher's Comment:</strong>
+            <div style="border: 1px solid black; padding: 10px; min-height: 60px;">
+                {{ report_card.class_teacher_comment }}
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+                Signature: _______________________
+            </div>
+        </div>
+
+        <div>
+            <strong>Headmaster's Comment:</strong>
+            <div style="border: 1px solid black; padding: 10px; min-height: 60px;">
+                {{ report_card.headmaster_comment }}
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+                Signature: _______________________
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

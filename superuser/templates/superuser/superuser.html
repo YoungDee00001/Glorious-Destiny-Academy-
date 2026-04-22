@@ -1,0 +1,1674 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Glorious Destiny Academy</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --crimson: rgb(77, 2, 2);
+            --crimson-light: rgba(77, 2, 2, 0.1);
+            --crimson-dark: rgb(54, 0, 10);
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            overflow-x: hidden;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(160deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1050;
+            box-shadow: 8px 0 30px rgba(77, 2, 2, 0.25);
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+        
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0,0,0,0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .sidebar-header i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.4;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 12px;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+        
+        .sidebar-menu a,
+        .sidebar-menu .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-menu a::before,
+        .sidebar-menu .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu .nav-link:hover,
+        .sidebar-menu a.active,
+        .sidebar-menu .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            transform: translateX(6px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-menu a:hover::before,
+        .sidebar-menu .nav-link:hover::before,
+        .sidebar-menu a.active::before {
+            transform: scaleY(1);
+        }
+        
+        .sidebar-menu a i,
+        .sidebar-menu .nav-link i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-menu a span,
+        .sidebar-menu .nav-link span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .collapse-inner {
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .collapse-header {
+            color: rgba(255,255,255,0.5) !important;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 15px 8px 8px 8px !important;
+        }
+        
+        .collapse-item {
+            color: rgba(255,255,255,0.7) !important;
+            padding: 8px 12px !important;
+            border-radius: 8px;
+            display: block;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 4px 0;
+            font-size: 0.85rem;
+        }
+        
+        .collapse-item:hover {
+            background-color: var(--crimson) !important;
+            color: white !important;
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: margin-left 0.4s ease;
+        }
+        
+        /* TOP NAVBAR */
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            border-bottom: 1px solid rgba(77, 2, 2, 0.1);
+        }
+        
+        .top-navbar h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* STAT CARDS */
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) rotate(-0.5deg);
+            box-shadow: 0 15px 40px rgba(77, 2, 2, 0.2);
+            border-color: var(--crimson);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .stat-card .icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: inherit;
+            filter: blur(15px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 12px 0 6px 0;
+            letter-spacing: -1px;
+        }
+        
+        .stat-card p {
+            color: #6c757d;
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .stat-card small {
+            font-size: 0.75rem;
+        }
+        
+        .stat-card.primary .icon { background: rgba(13, 110, 253, 0.15); color: #0d6efd; }
+        .stat-card.success .icon { background: rgba(25, 135, 84, 0.15); color: #198754; }
+        .stat-card.warning .icon { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+        .stat-card.danger .icon { background: rgba(220, 53, 69, 0.15); color: #dc3545; }
+        
+        /* CARDS */
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, rgba(77, 2, 2, 0.05) 0%, rgba(77, 2, 2, 0.02) 100%);
+            border-bottom: 2px solid rgba(77, 2, 2, 0.1);
+            padding: 18px 20px;
+        }
+        
+        .card-header h5 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--crimson);
+        }
+        
+        /* TABLE */
+        .table-responsive {
+            border-radius: 15px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table {
+            margin: 0;
+            min-width: 600px;
+        }
+        
+        .table thead {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+        }
+        
+        .table thead th {
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            white-space: nowrap;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .table tbody tr:hover {
+            background: var(--crimson-light);
+            transform: scale(1.005);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .table tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        
+        /* QUICK ACTION BUTTONS */
+        .quick-action-btn {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 18px;
+            padding: 25px 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #495057;
+            display: block;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+        }
+        
+        .quick-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--crimson-light);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        
+        .quick-action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .quick-action-btn:hover {
+            border-color: var(--crimson);
+            color: var(--crimson);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 35px rgba(77, 2, 2, 0.2);
+        }
+        
+        .quick-action-btn i {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quick-action-btn .fw-medium {
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* ACTIVITY ITEMS */
+        .activity-item {
+            display: flex;
+            padding: 18px;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .activity-item:hover {
+            background: linear-gradient(135deg, var(--crimson-light) 0%, rgba(77, 2, 2, 0.05) 100%);
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+        
+        .activity-icon.primary { background: rgba(13, 110, 253, 0.15); color: #0d6efd; }
+        .activity-icon.success { background: rgba(25, 135, 84, 0.15); color: #198754; }
+        .activity-icon.warning { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+        
+        .activity-item h6 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .activity-item p {
+            font-size: 0.85rem;
+        }
+        
+        .activity-item small {
+            font-size: 0.75rem;
+        }
+        
+        /* EVENT CARDS */
+        .event-card {
+            display: flex;
+            align-items: start;
+            padding: 18px;
+            border-radius: 16px;
+            background: white;
+            border: 2px solid transparent;
+            margin-bottom: 18px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(180deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .event-card:hover {
+            border-color: var(--crimson);
+            box-shadow: 0 10px 30px rgba(77, 2, 2, 0.15);
+            transform: translateX(8px);
+        }
+        
+        .event-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .event-date {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 12px 16px;
+            text-align: center;
+            margin-right: 18px;
+            min-width: 70px;
+            box-shadow: 0 6px 18px rgba(77, 2, 2, 0.3);
+            flex-shrink: 0;
+        }
+        
+        .event-date .day {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+        
+        .event-date .month {
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 4px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .event-card h6 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .event-card p {
+            font-size: 0.85rem;
+        }
+        
+        /* USER PROFILE */
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(77, 2, 2, 0.3);
+            flex-shrink: 0;
+        }
+        
+        /* BADGES */
+        .badge {
+            padding: 6px 14px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+        
+        /* ALERT */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 16px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            font-size: 0.9rem;
+        }
+        
+        /* BUTTONS */
+        .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* MOBILE TOGGLE */
+        .mobile-toggle {
+            display: none;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(77, 2, 2, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(77, 2, 2, 0.4);
+        }
+        
+        /* CHART CONTAINER */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 15px;
+        }
+        
+        /* NOTIFICATION DROPDOWN */
+        .notification-dropdown {
+            width: 320px;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 0;
+        }
+        
+        .notification-dropdown .dropdown-header {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: white;
+            font-weight: 700;
+            padding: 12px 18px;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .notification-dropdown .dropdown-item {
+            padding: 12px 18px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .notification-dropdown .dropdown-item:hover {
+            background: var(--crimson-light);
+            transform: translateX(5px);
+        }
+        
+        /* RESPONSIVE DESIGN */
+        
+        /* Tablets and below */
+        @media (max-width: 991px) {
+            .chart-container {
+                height: 250px;
+            }
+            
+            .stat-card h3 {
+                font-size: 2rem;
+            }
+            
+            .stat-card .icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.6rem;
+            }
+            
+            .quick-action-btn {
+                min-height: 120px;
+                padding: 20px 12px;
+            }
+            
+            .quick-action-btn i {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Mobile devices */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 260px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 15px 0 50px rgba(0,0,0,0.3);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-navbar {
+                padding: 12px 15px;
+            }
+            
+            .top-navbar h2 {
+                font-size: 1.1rem;
+            }
+            
+            .container-fluid {
+                padding: 15px !important;
+            }
+            
+            .stat-card {
+                padding: 20px 15px;
+            }
+            
+            .stat-card h3 {
+                font-size: 1.8rem;
+            }
+            
+            .stat-card .icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
+            }
+            
+            .stat-card p {
+                font-size: 0.85rem;
+            }
+            
+            .card-header {
+                padding: 15px;
+            }
+            
+            .card-header h5 {
+                font-size: 1rem;
+            }
+            
+            .quick-action-btn {
+                min-height: 110px;
+                padding: 18px 10px;
+            }
+            
+            .quick-action-btn i {
+                font-size: 1.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .quick-action-btn .fw-medium {
+                font-size: 0.85rem;
+            }
+            
+            .table thead th {
+                font-size: 0.75rem;
+                padding: 12px 10px;
+            }
+            
+            .table tbody td {
+                font-size: 0.85rem;
+                padding: 12px 10px;
+            }
+            
+            .activity-item {
+                padding: 15px;
+            }
+            
+            .activity-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1.1rem;
+                margin-right: 12px;
+            }
+            
+            .activity-item h6 {
+                font-size: 0.9rem;
+            }
+            
+            .activity-item p {
+                font-size: 0.8rem;
+            }
+            
+            .event-card {
+                padding: 15px;
+            }
+            
+            .event-date {
+                min-width: 60px;
+                padding: 10px 12px;
+                margin-right: 12px;
+            }
+            
+            .event-date .day {
+                font-size: 1.5rem;
+            }
+            
+            .event-date .month {
+                font-size: 0.75rem;
+            }
+            
+            .event-card h6 {
+                font-size: 0.9rem;
+            }
+            
+            .event-card p {
+                font-size: 0.8rem;
+            }
+            
+            .chart-container {
+                height: 220px;
+                padding: 10px;
+            }
+            
+            .notification-dropdown {
+                width: 100%;
+                max-width: 320px;
+            }
+            
+            .badge {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+            
+            .alert {
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media (max-width: 576px) {
+            :root {
+                --sidebar-width: 240px;
+            }
+            
+            .top-navbar h2 {
+                font-size: 1rem;
+            }
+            
+            .stat-card h3 {
+                font-size: 1.6rem;
+            }
+            
+            .stat-card .icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .card-header h5 {
+                font-size: 0.95rem;
+            }
+            
+            .quick-action-btn {
+                min-height: 100px;
+                padding: 15px 8px;
+            }
+            
+            .quick-action-btn i {
+                font-size: 1.6rem;
+            }
+            
+            .quick-action-btn .fw-medium {
+                font-size: 0.8rem;
+            }
+            
+            .activity-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            
+            .event-date {
+                min-width: 55px;
+                padding: 8px 10px;
+            }
+            
+            .event-date .day {
+                font-size: 1.3rem;
+            }
+            
+            .chart-container {
+                height: 200px;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 400px) {
+            .sidebar-header h4 {
+                font-size: 1rem;
+            }
+            
+            .sidebar-menu a,
+            .sidebar-menu .nav-link {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .sidebar-menu a i,
+            .sidebar-menu .nav-link i {
+                width: 20px;
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+            
+            .collapse-item {
+                font-size: 0.8rem;
+                padding: 7px 10px !important;
+            }
+            
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Landscape mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .sidebar-header {
+                padding: 15px;
+            }
+            
+            .sidebar-header i {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+            
+            .sidebar-header h4 {
+                font-size: 0.95rem;
+            }
+            
+            .sidebar-menu {
+                padding: 10px;
+            }
+            
+            .sidebar-menu a,
+            .sidebar-menu .nav-link {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-graduation-cap"></i>
+            <h4>Glorious Destiny Academy</h4>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'home' %}" class="active"><i class="fas fa-th-large"></i> Home</a></li>
+            <li><a href="{% url 'dashboard' %}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseAuth" aria-expanded="false">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Authentication</span>
+                </a>
+                <div id="collapseAuth" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">USER:</h6>
+                        <a class="collapse-item" href="{% url 'SuperUserList' %}">User</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseStudentReg" aria-expanded="false">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student Registration</span>
+                </a>
+                <div id="collapseStudentReg" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Student Registration:</h6>
+                        <a class="collapse-item" href="{% url 'student_register' %}">New Registration</a>
+                        <a class="collapse-item" href="{% url 'super_user_student_list' %}">Student List</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseStaffReg" aria-expanded="false">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Staff Management</span>
+                </a>
+                <div id="collapseStaffReg" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">STAFF MANAGEMENT:</h6>
+                        <a class="collapse-item" href="{% url 'teacher_add' %}">Staff Registration</a>
+                        <a class="collapse-item" href="{% url 'teacher_list' %}">Staff List</a>
+                        <a class="collapse-item" href="{% url 'document_add' %}">Create Staff Doc.</a>
+                        <a class="collapse-item" href="{% url 'document_list' %}">Staff Document List</a>
+                        <a class="collapse-item" href="{% url 'folder_add' %}">Create Staff Folder</a>
+                        <a class="collapse-item" href="{% url 'folder_list' %}">Staff Folder List</a>
+                    </div>
+                </div>
+            </li>
+
+            <li><a href="#"><i class="fas fa-clipboard-check"></i> Admissions</a></li>
+            
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFee" aria-expanded="false">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Fee</span>
+                </a>
+                <div id="collapseFee" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">FEES:</h6>
+                        <a class="collapse-item" href="{% url 'admin_dashboard' %}">Fee Dashboard</a>
+                        <a class="collapse-item" href="{% url 'create_fee_record' %}">Create Fee</a>
+                        <a class="collapse-item" href="{% url 'paid_fees_list' %}">Paid Fee</a>
+                        <a class="collapse-item" href="{% url 'unpaid_fees_list' %}">UnPaid Fee</a>
+                    </div>
+                </div>
+            </li>
+
+            <li><a href="#"><i class="fas fa-file-chart-line"></i> Reports</a></li>
+            <li><a href="#"><i class="fas fa-calendar-star"></i> Events</a></li>
+            
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapselit" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span>Notification</span>
+                </a>
+                <div id="collapselit" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Add Notification:</h6>
+                        <a class="collapse-item" href="#">Create notification</a>
+                        <a class="collapse-item" href="#">notification list</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseff" aria-expanded="false">
+                    <i class="fas fa-certificate"></i>
+                    <span>Report-Card</span>
+                </a>
+                <div id="collapseff" class="collapse">
+                    <div style="margin: 20px;" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Add Report-Card:</h6>
+                        <a class="collapse-item" href="{% url 'create_report_card' %}">Create Report-Card</a>
+                        <a class="collapse-item" href="{% url 'report_card_list' %}">Report-Card list</a>
+                    </div>
+                </div>
+            </li>
+
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="{% url 'today_birthdays' %}"><i class="fas fa-birthday-cake"></i> Birthday</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex flex-wrap justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2>Admin Command Center</h2>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-light position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">5</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+                        <li class="dropdown-header">Notifications</li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-birthday-cake text-primary me-2"></i>3 birthdays today</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-circle text-warning me-2"></i>12 pending payments</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#">View All</a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                        <div class="user-avatar">AD</div>
+                        <div class="d-none d-md-block">
+                            <strong>Admin User</strong>
+                            <small class="d-block text-muted">Superadmin</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="container-fluid p-4">
+            <!-- Welcome Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Welcome back!</strong> Current Session: 2024/2025 - First Term
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card primary">
+                        <div class="icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>{{ student_count }}</h3>
+                        <p>Total Students</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card success">
+                        <div class="icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>{{ staff_count }}</h3>
+                        <p>Total Teachers</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card warning">
+                        <div class="icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>₦8.5M</h3>
+                        <p>Fees Collected</p>
+                        <small class="text-warning"><i class="fas fa-clock"></i> ₦2.3M pending</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card danger">
+                        <div class="icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>45</h3>
+                        <p>Overdue Payments</p>
+                        <small class="text-danger"><i class="fas fa-arrow-down"></i> Needs attention</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Items Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-primary text-uppercase fw-bold mb-2">Pending Students</h6>
+                                    <h4 class="mb-0 fw-bold">{{ pending_student_count }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-users fa-2x text-primary opacity-25"></i>
+                                </div>
+                            </div>
+                            <a href="{% url 'pending_students' %}" class="btn btn-outline-primary btn-sm mt-3 w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-success text-uppercase fw-bold mb-2">Pending Staffs</h6>
+                                    <h4 class="mb-0 fw-bold">{{ pending_staff_count }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-user-tie fa-2x text-success opacity-25"></i>
+                                </div>
+                            </div>
+                            <a href="{% url 'pending_staff' %}" class="btn btn-outline-success btn-sm mt-3 w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-info text-uppercase fw-bold mb-2">Pending Courses</h6>
+                                    <h4 class="mb-0 fw-bold">{{ pending_course_count }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-book fa-2x text-info opacity-25"></i>
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-outline-info btn-sm mt-3 w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-warning text-uppercase fw-bold mb-2">Pending Subjects</h6>
+                                    <h4 class="mb-0 fw-bold">{{ subject_count }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-list-alt fa-2x text-warning opacity-25"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Population Overview -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fas fa-users-class me-2"></i>Class Population Overview</h5>
+                    <span class="badge bg-secondary">Total Classes: {{ total_classes }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Total Students</th>
+                                    <th class="text-primary">Boys</th>
+                                    <th class="text-danger">Girls</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for class in classes_data %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ class.class_name }}</strong>
+                                        <br><small class="text-muted">{{ class.class_key|title }}</small>
+                                    </td>
+                                    <td><strong>{{ class.total_students }}</strong></td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ class.boys_count }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-danger">{{ class.girls_count }}</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Details</button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                        No active classes found for this term.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <a href="{% url 'student_register' %}" class="quick-action-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <div class="fw-medium">Add New Student</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'teacher_add' %}" class="quick-action-btn">
+                                <i class="bi bi-person-workspace"></i>
+                                <div class="fw-medium">Add New Staff</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="quick-action-btn">
+                                <i class="fas fa-credit-card"></i>
+                                <div class="fw-medium">Record Payment</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'superuser_event_create' %}" class="quick-action-btn">
+                                <i class="fas fa-calendar-plus"></i>
+                                <div class="fw-medium">Create Event</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="quick-action-btn">
+                                <i class="fas fa-file-download"></i>
+                                <div class="fw-medium">Generate Report</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="quick-action-btn">
+                                <i class="fas fa-clipboard-check"></i>
+                                <div class="fw-medium">Course Registration</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts and Recent Activity -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-chart-line me-2"></i>Fee Collection Trend</h5>
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                                <option>This Session</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="feeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-pie me-2"></i>Student Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="studentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activities and Upcoming Events -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-clock me-2"></i>Recent Activities</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">New Student Admission</h6>
+                                    <p class="mb-0 text-muted small">John Doe admitted to JSS 1</p>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Payment Received</h6>
+                                    <p class="mb-0 text-muted small">₦150,000 tuition fee from Sarah Johnson</p>
+                                    <small class="text-muted">5 hours ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Event Created</h6>
+                                    <p class="mb-0 text-muted small">EMIT Week 2025 scheduled</p>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Report Generated</h6>
+                                    <p class="mb-0 text-muted small">First Term Academic Report</p>
+                                    <small class="text-muted">2 days ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-calendar-alt me-2"></i>Upcoming Events</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">20</span>
+                                    <span class="month">JAN</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">EMIT Week 2025</h6>
+                                    <p class="mb-1 text-muted small">Jan 20-27, 2025</p>
+                                    <span class="badge bg-primary">School Event</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">05</span>
+                                    <span class="month">FEB</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">PTA Meeting</h6>
+                                    <p class="mb-1 text-muted small">Feb 5, 2025 at 10:00 AM</p>
+                                    <span class="badge bg-info">Meeting</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">14</span>
+                                    <span class="month">FEB</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Cultural Day</h6>
+                                    <p class="mb-1 text-muted small">Feb 14, 2025</p>
+                                    <span class="badge bg-success">Cultural</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Payments Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-receipt me-2"></i>Recent Payments</h5>
+                            <a href="#" class="btn btn-sm btn-primary">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Student</th>
+                                            <th>Class</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>REC-2025-001</strong></td>
+                                            <td>Sarah Johnson</td>
+                                            <td>JSS 2</td>
+                                            <td>₦150,000</td>
+                                            <td>Jan 15, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-002</strong></td>
+                                            <td>Michael Brown</td>
+                                            <td>SSS 1</td>
+                                            <td>₦175,000</td>
+                                            <td>Jan 14, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-003</strong></td>
+                                            <td>Emily Davis</td>
+                                            <td>Primary 5</td>
+                                            <td>₦120,000</td>
+                                            <td>Jan 13, 2025</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-004</strong></td>
+                                            <td>David Wilson</td>
+                                            <td>JSS 3</td>
+                                            <td>₦160,000</td>
+                                            <td>Jan 12, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        const feeCtx = document.getElementById('feeChart').getContext('2d');
+        new Chart(feeCtx, {
+            type: 'line',
+            data: {
+                labels: ['August', 'September', 'October', 'November', 'December', 'January'],
+                datasets: [{
+                    label: 'Fees Collected (₦)',
+                    data: [5200000, 6800000, 7500000, 6900000, 8100000, 8500000],
+                    borderColor: 'rgb(77, 2, 2)',
+                    backgroundColor: 'rgba(77, 2, 2, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₦' + (value / 1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        const studentCtx = document.getElementById('studentChart').getContext('2d');
+        new Chart(studentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Nursery', 'Primary', 'JSS', 'SSS'],
+                datasets: [{
+                    data: [150, 450, 380, 265],
+                    backgroundColor: [
+                        'rgba(77, 2, 2, 0.9)',
+                        'rgba(13, 110, 253, 0.9)',
+                        'rgba(25, 135, 84, 0.9)',
+                        'rgba(255, 193, 7, 0.9)'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        document.querySelectorAll('.sidebar-menu a, .sidebar-menu .nav-link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                if (!this.hasAttribute('data-bs-toggle')) {
+                    document.querySelectorAll('.sidebar-menu a, .sidebar-menu .nav-link').forEach(function(l) {
+                        l.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+                
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+        
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+        
+        window.addEventListener('online', function() {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alert.style.zIndex = '9999';
+            alert.innerHTML = '<i class="fas fa-wifi me-2"></i>Connection restored<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            document.body.appendChild(alert);
+            
+            setTimeout(function() { alert.remove(); }, 3000);
+        });
+        
+        window.addEventListener('offline', function() {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alert.style.zIndex = '9999';
+            alert.innerHTML = '<i class="fas fa-wifi-slash me-2"></i>Connection lost<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            document.body.appendChild(alert);
+        });
+        
+        console.log('%c Glorious Destiny Academy ', 'background: rgb(77, 2, 2); color: white; font-size: 20px; font-weight: bold; padding: 10px;');
+        console.log('%c School Management System v1.0 ', 'background: rgb(54, 0, 10); color: white; font-size: 14px; padding: 5px;');
+        console.log('Dashboard loaded successfully! 🎓');
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+{% extends 'ba_base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ title }}</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Basic Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.student.label_tag }}
+                        {{ form.student }}
+                        {{ form.student.errors }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.term.label_tag }}
+                        {{ form.term }}
+                        {{ form.term.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Attendance</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.times_school_opened.label_tag }}
+                        {{ form.times_school_opened }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.times_present.label_tag }}
+                        {{ form.times_present }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.times_absent.label_tag }}
+                        {{ form.times_absent }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Scores -->
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Subject Scores</h5>
+            </div>
+            <div class="card-body">
+                {{ subject_formset.management_form }}
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>CA1 (10)</th>
+                                <th>CA2 (10)</th>
+                                <th>CA3 (10)</th>
+                                <th>Exam (70)</th>
+                                <th>Total</th>
+                                <th>Grade</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in subject_formset %}
+                            <tr>
+                                <td>{{ form.subject }}</td>
+                                <td>{{ form.ca1 }}</td>
+                                <td>{{ form.ca2 }}</td>
+                                <td>{{ form.ca3 }}</td>
+                                <td>{{ form.exam }}</td>
+                                <td><span class="total-score">-</span></td>
+                                <td><span class="grade-display">-</span></td>
+                                <td>{{ form.remark }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affective Disposition -->
+        <div class="card mb-3">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Affective Disposition (1-5)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for field in affective_form %}
+                    <div class="col-md-3 mb-2">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Psychomotor Skills -->
+        <div class="card mb-3">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Psychomotor Skills (1-5)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for field in psychomotor_form %}
+                    <div class="col-md-4 mb-2">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments -->
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Comments</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.class_teacher_comment.label_tag }}
+                    {{ form.class_teacher_comment }}
+                </div>
+                <div class="mb-3">
+                    {{ form.headmaster_comment.label_tag }}
+                    {{ form.headmaster_comment }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="mb-4">
+            <button type="submit" class="btn btn-primary btn-lg">Save Report Card</button>
+            <a href="{% url 'report_card_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+// Auto-calculate totals and grades
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('input[type="number"]');
+        const totalSpan = row.querySelector('.total-score');
+        const gradeSpan = row.querySelector('.grade-display');
+        
+        if (inputs.length >= 4) {
+            const [ca1, ca2, ca3, exam] = inputs;
+            
+            function updateTotal() {
+                const total = (parseFloat(ca1.value) || 0) + 
+                             (parseFloat(ca2.value) || 0) + 
+                             (parseFloat(ca3.value) || 0) + 
+                             (parseFloat(exam.value) || 0);
+                
+                totalSpan.textContent = total.toFixed(2);
+                
+                // Calculate grade
+                let grade = '';
+                if (total >= 80) grade = 'A';
+                else if (total >= 70) grade = 'B';
+                else if (total >= 60) grade = 'C';
+                else if (total >= 50) grade = 'D';
+                else if (total >= 40) grade = 'E';
+                else grade = 'F';
+                
+                gradeSpan.textContent = grade;
+            }
+            
+            [ca1, ca2, ca3, exam].forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
+            
+            updateTotal(); // Initial calculation
+        }
+    });
+});
+</script>
+{% endblock %}

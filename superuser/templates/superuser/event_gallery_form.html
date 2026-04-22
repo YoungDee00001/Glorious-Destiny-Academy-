@@ -1,0 +1,23 @@
+{% extends "ba_base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Upload Photo{% endblock %}
+
+{% block content %}
+<h2>Upload Photo for Event</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.media }}
+    {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+            {% for error in field.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Upload</button>
+    <a href="{% url 'event_detail' view.kwargs.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

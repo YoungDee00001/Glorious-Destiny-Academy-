@@ -1,0 +1,39 @@
+{% extends 'ba_base.html' %}
+{% load static %}
+
+{% block title %}
+Access Denied
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-md-8 col-lg-6 text-center p-4 shadow-sm rounded bg-light">
+
+            <!-- Responsive Image -->
+            <img src="{% static 'img/400.png' %}" 
+                 class="img-fluid rounded-circle mb-4"
+                 alt="Access Denied Icon"
+                 style="max-width: 150px;">
+
+            <h3 class="fw-bold text-danger">This page is Restricted</h3>
+
+            <h3 class="display-6 py-4 text-danger">Access Denied</h3>
+
+            <h5>
+                <strong class="fw-bold" 
+                        style="color: #f8d528; text-shadow: 1px 1px 3px black;">
+                    Sorry, Request Not Allowed
+                </strong>
+            </h5>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-warning mt-4 px-4">
+                Back Home
+            </a>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "ba_base.html" %}
+{% block content %}
+<div class="container py-5 text-center">
+
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h3 class="fw-bold mb-3">Delete Event?</h3>
+            <p>Are you sure you want to delete <strong>{{ object.title }}</strong>?</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger w-100 mb-2">Confirm Delete</button>
+                <a href="{% url 'event_detail' object.pk %}" class="btn btn-secondary w-100">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

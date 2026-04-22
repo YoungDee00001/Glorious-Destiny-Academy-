@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Glorious Destiny Academy</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: rgb(77, 2, 2);
+            --primary-dark: rgb(45, 1, 1);
+            --sidebar-width: 260px;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --accent-glow: rgba(77, 2, 2, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f4f7fa;
+            color: #2d3436;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Sidebar Futuristic Styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0;
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+        }
+        
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            font-weight: 700;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 12px;
+            margin: 0;
+        }
+        
+        .sidebar-menu li { margin-bottom: 8px; }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-menu a i {
+            width: 30px;
+            font-size: 1.2rem;
+        }
+
+        /* Top Navbar */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.4s ease;
+            min-height: 100vh;
+        }
+        
+        .top-navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px var(--accent-glow);
+        }
+
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Action Cards Modernization */
+        .card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 20px;
+        }
+
+        .border-left-primary { border-left: 5px solid #4e73df; }
+        .border-left-success { border-left: 5px solid #1cc88a; }
+        .border-left-warning { border-left: 5px solid #f6c23e; }
+
+        .quick-action-btn {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 25px 15px;
+            transition: all 0.3s ease;
+            color: #444;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary-color);
+            color: white !important;
+            transform: scale(1.05);
+        }
+
+        .quick-action-btn i {
+            color: inherit;
+        }
+
+        .user-avatar {
+            width: 42px; 
+            height: 42px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            color: white; 
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        /* Main Container with Tactical Red Border */
+        .dashboard-card {
+            background: rgba(20, 0, 0, 0.95);
+            border: 2px solid rgb(77, 2, 2);
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(77, 2, 2, 0.6), inset 0 0 20px rgba(77, 2, 2, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        /* Futuristic Scanning Animation Line (Red) */
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(77, 2, 2, 0.4), transparent);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Icon Animation (Floating & Glowing) */
+        .main-icon {
+            font-size: 65px;
+            margin-bottom: 15px;
+            color: rgb(255, 40, 40);
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 5px rgb(77, 2, 2)); }
+            50% { transform: translateY(-15px); filter: drop-shadow(0 0 25px rgb(255, 0, 0)); }
+        }
+
+        .status-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-header h1 {
+            margin: 10px 0;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            color: #fff;
+            text-shadow: 0 0 15px rgb(77, 2, 2);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgb(77, 2, 2);
+            height: 300px;
+        }
+
+        .live-indicator {
+            color: #ff0000;
+            font-size: 0.9rem;
+            font-weight: bold;
+            animation: blink 0.8s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Activity Items */
+        .activity-item {
+            display: flex;
+            align-items: start;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 15px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.primary {
+            background: rgba(78, 115, 223, 0.1);
+            color: #4e73df;
+        }
+
+        .activity-icon.success {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        .activity-icon.warning {
+            background: rgba(246, 194, 62, 0.1);
+            color: #f6c23e;
+        }
+
+        /* Event Cards */
+        .event-card {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .event-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .event-date {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 60px;
+            flex-shrink: 0;
+        }
+
+        .event-date .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .event-date .month {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-toggle {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar { 
+                transform: translateX(-100%); 
+            }
+            
+            .sidebar.active { 
+                transform: translateX(0); 
+            }
+            
+            .main-content { 
+                margin-left: 0; 
+            }
+            
+            .mobile-toggle { 
+                display: block !important; 
+            }
+
+            .top-navbar {
+                padding: 15px 20px;
+            }
+
+            .dashboard-card {
+                padding: 25px 20px;
+            }
+
+            .status-header h1 {
+                font-size: 1.3rem;
+                letter-spacing: 3px;
+            }
+
+            .main-icon {
+                font-size: 50px;
+            }
+
+            .chart-container {
+                height: 250px;
+                padding: 15px;
+            }
+
+            .stat-card {
+                margin-bottom: 15px;
+            }
+
+            .card-header h5 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar h2 {
+                font-size: 1.1rem !important;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card .icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .stat-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .quick-action-btn {
+                padding: 20px 10px;
+            }
+
+            .quick-action-btn i {
+                font-size: 1.5rem !important;
+            }
+
+            .quick-action-btn span {
+                font-size: 0.75rem;
+            }
+
+            .dashboard-card {
+                padding: 20px 15px;
+            }
+
+            .status-header h1 {
+                font-size: 1.1rem;
+                letter-spacing: 2px;
+            }
+
+            .status-header p {
+                font-size: 0.85rem;
+            }
+
+            .card-header {
+                padding: 15px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+
+            .table th, .table td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+
+            .event-card {
+                padding: 12px;
+            }
+
+            .event-date {
+                min-width: 50px;
+                padding: 8px;
+            }
+
+            .event-date .day {
+                font-size: 1.2rem;
+            }
+
+            .activity-item {
+                padding: 12px 15px;
+            }
+
+            .activity-icon {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            :root {
+                --sidebar-width: 280px;
+            }
+
+            body {
+                font-size: 14px;
+            }
+
+            .top-navbar {
+                padding: 12px 15px;
+            }
+
+            .top-navbar h2 {
+                font-size: 0.95rem !important;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .alert {
+                padding: 12px !important;
+                font-size: 0.85rem;
+            }
+
+            .dashboard-card {
+                padding: 15px;
+                margin: 0;
+            }
+
+            .status-header h1 {
+                font-size: 0.95rem;
+                letter-spacing: 1.5px;
+            }
+
+            .status-header p {
+                font-size: 0.75rem;
+            }
+
+            .main-icon {
+                font-size: 40px;
+            }
+
+            .chart-container {
+                height: 200px;
+                padding: 10px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .stat-card .icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+
+            .stat-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .stat-card p {
+                font-size: 0.85rem;
+            }
+
+            .stat-card small {
+                font-size: 0.75rem;
+            }
+
+            .quick-action-btn {
+                padding: 15px 8px;
+            }
+
+            .quick-action-btn i {
+                font-size: 1.3rem !important;
+                margin-bottom: 5px !important;
+            }
+
+            .quick-action-btn span {
+                font-size: 0.7rem;
+            }
+
+            .card-header h5 {
+                font-size: 0.9rem;
+            }
+
+            .btn-sm {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+
+            .border-left-primary,
+            .border-left-success,
+            .border-left-warning {
+                border-left-width: 3px !important;
+            }
+
+            .event-card {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .event-card h6 {
+                font-size: 0.9rem;
+            }
+
+            .activity-item h6 {
+                font-size: 0.9rem;
+            }
+
+            .table {
+                font-size: 0.75rem;
+            }
+
+            .table th, .table td {
+                padding: 8px 5px;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .top-navbar h2 {
+                font-size: 0.85rem !important;
+            }
+
+            .status-header h1 {
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
+
+            .main-icon {
+                font-size: 35px;
+            }
+
+            .stat-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .quick-action-btn i {
+                font-size: 1.1rem !important;
+            }
+
+            .quick-action-btn span {
+                font-size: 0.65rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="mb-2"><i class="fas fa-graduation-cap fa-3x text-white"></i></div>
+            <h4>GLORIOUS DESTINY</h4>
+            <span class="badge bg-light text-dark" style="font-size: 0.6rem;">ADMIN PORTAL</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'home' %}" class="active"><i class="fas fa-th-large"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-users"></i> Students</a></li>
+            <li><a href="#"><i class="fas fa-user-graduate"></i> Admissions</a></li>
+            <li><a href="#"><i class="fas fa-money-bill-wave"></i> Fees & Payments</a></li>
+            <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> Teachers</a></li>
+            <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> Notifications</a></li>
+            <li><a href="#"><i class="fas fa-birthday-cake"></i> Birthday</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <button class="mobile-toggle btn btn-dark" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 class="mb-0 h4 fw-bold">Dashboard Overview</h2>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-light rounded-circle shadow-sm p-2 position-relative" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2">
+                        <li class="dropdown-header">Recent Alerts</li>
+                        <li><a class="dropdown-item rounded" href="#">3 Birthdays Today</a></li>
+                        <li><a class="dropdown-item rounded" href="#">12 Overdue Payments</a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <div class="d-flex align-items-center gap-2 cursor-pointer" data-bs-toggle="dropdown" style="cursor: pointer;">
+                        <div class="user-avatar shadow-sm">AD</div>
+                        <div class="d-none d-md-block">
+                            <div class="fw-bold small lh-1">Admin User</div>
+                            <small class="text-muted" style="font-size: 0.7rem;">Superadmin</small>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid p-4">
+            <div class="alert border-0 shadow-sm bg-white d-flex align-items-center p-3 mb-4" style="border-left: 4px solid var(--primary-color) !important;">
+                <i class="fas fa-sparkles text-warning me-3 fa-lg"></i>
+                <div>
+                    <strong>Welcome back, Admin!</strong> 
+                    <span class="text-muted ms-2 d-none d-md-inline">Current Session: 2024/2025 - First Term</span>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="icon bg-primary bg-opacity-10 text-primary"><i class="fas fa-user-graduate"></i></div>
+                        <p class="text-muted mb-1">Total Students</p>
+                        <h3 class="fw-bold mb-0">1,245</h3>
+                        <small class="text-success fw-bold"><i class="fas fa-caret-up"></i> +12%</small>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="icon bg-success bg-opacity-10 text-success"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <p class="text-muted mb-1">Total Teachers</p>
+                        <h3 class="fw-bold mb-0">87</h3>
+                        <small class="text-success fw-bold"><i class="fas fa-caret-up"></i> +5 New</small>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="icon bg-warning bg-opacity-10 text-warning"><i class="fas fa-wallet"></i></div>
+                        <p class="text-muted mb-1">Fees Collected</p>
+                        <h3 class="fw-bold mb-0">₦8.5M</h3>
+                        <small class="text-danger fw-bold">₦2.3M Pending</small>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="icon bg-danger bg-opacity-10 text-danger"><i class="fas fa-exclamation-circle"></i></div>
+                        <p class="text-muted mb-1">Overdue</p>
+                        <h3 class="fw-bold mb-0">45</h3>
+                        <small class="text-muted">Requires action</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary h-100 py-2">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="text-xs fw-bold text-primary text-uppercase mb-1">Administration</div>
+                                    <a class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-3" href="{% url 'Administration' %}">Manage Portal</a>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-users-cog fa-2x text-gray-300"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success h-100 py-2">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="text-xs fw-bold text-success text-uppercase mb-1">Staff Management</div>
+                                    <a class="btn btn-outline-success btn-sm rounded-pill mt-3 px-3" href="{% url 'StaffAdmin' %}">Staff Dashboard</a>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-user-tie fa-2x text-gray-300"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success h-100 py-2">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="text-xs fw-bold text-success text-uppercase mb-1">Students</div>
+                                    <a class="btn btn-outline-success btn-sm rounded-pill mt-3 px-3" href="{% url 'StudentAdmin' %}">Student Hub</a>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-user-graduate fa-2x text-gray-300"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning h-100 py-2">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="text-xs fw-bold text-warning text-uppercase mb-1">Super User</div>
+                                    <a class="btn btn-outline-warning btn-sm rounded-pill mt-3 px-3" href="{% url 'SuperuserAdmin' %}">Control Center</a>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-shield-alt fa-2x text-gray-300"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-5">
+                <div class="col-12"><h5 class="fw-bold mb-3">Quick Actions</h5></div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="quick-action-btn text-center">
+                        <i class="fas fa-plus-circle mb-2 d-block fa-2x"></i>
+                        <span class="small fw-bold">Add Student</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="quick-action-btn text-center">
+                        <i class="fas fa-file-invoice-dollar mb-2 d-block fa-2x"></i>
+                        <span class="small fw-bold">New Payment</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="quick-action-btn text-center">
+                        <i class="fas fa-calendar-check mb-2 d-block fa-2x"></i>
+                        <span class="small fw-bold">Set Event</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="quick-action-btn text-center">
+                        <i class="fas fa-download mb-2 d-block fa-2x"></i>
+                        <span class="small fw-bold">Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Charts and Recent Activity -->
+            <div class="row g-3 mb-5">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h5 class="mb-0"><i class="fas fa-chart-line"></i> Fee Collection Trend</h5>
+                            <select class="form-select form-select-sm" style="width: auto; min-width: 150px;">
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                                <option>This Session</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <div class="dashboard-card mb-0">
+                                <div class="status-header">
+                                    <div class="main-icon">
+                                        <i class="fas fa-shield-halved"></i>
+                                    </div>
+                                    <h1>Core Defense: <span style="color: rgb(255, 60, 60);">Engaged</span></h1>
+                                    <p><span class="live-indicator">●</span> SYSTEM OVERRIDE ACTIVE // THERMAL THREAT DETECTED</p>
+                                </div>
+
+                                <div class="data-grid">
+                                    <div class="chart-container">
+                                        <canvas id="thermalChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-users"></i> Student Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- <div class="chart-container"> -->
+                                <canvas id="studentChart"></canvas>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activities and Upcoming Events -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> Recent Activities</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">New Student Admission</h6>
+                                    <p class="mb-0 text-muted small">John Doe admitted to JSS 1</p>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Payment Received</h6>
+                                    <p class="mb-0 text-muted small">₦150,000 tuition fee from Sarah Johnson</p>
+                                    <small class="text-muted">5 hours ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Event Created</h6>
+                                    <p class="mb-0 text-muted small">EMIT Week 2025 scheduled</p>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Report Generated</h6>
+                                    <p class="mb-0 text-muted small">First Term Academic Report</p>
+                                    <small class="text-muted">2 days ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Upcoming Events</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">20</span>
+                                    <span class="month">JAN</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">EMIT Week 2025</h6>
+                                    <p class="mb-1 text-muted small">Jan 20-27, 2025</p>
+                                    <span class="badge bg-primary">School Event</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">05</span>
+                                    <span class="month">FEB</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">PTA Meeting</h6>
+                                    <p class="mb-1 text-muted small">Feb 5, 2025 at 10:00 AM</p>
+                                    <span class="badge bg-info">Meeting</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day">14</span>
+                                    <span class="month">FEB</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Cultural Day</h6>
+                                    <p class="mb-1 text-muted small">Feb 14, 2025</p>
+                                    <span class="badge bg-success">Cultural</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Payments Table -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h5 class="mb-0"><i class="fas fa-receipt"></i> Recent Payments</h5>
+                            <a href="#" class="btn btn-sm btn-primary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Student</th>
+                                            <th>Class</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>REC-2025-001</strong></td>
+                                            <td>Sarah Johnson</td>
+                                            <td>JSS 2</td>
+                                            <td>₦150,000</td>
+                                            <td>Jan 15, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-002</strong></td>
+                                            <td>Michael Brown</td>
+                                            <td>SSS 1</td>
+                                            <td>₦175,000</td>
+                                            <td>Jan 14, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-003</strong></td>
+                                            <td>Emily Davis</td>
+                                            <td>Primary 5</td>
+                                            <td>₦120,000</td>
+                                            <td>Jan 13, 2025</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>REC-2025-004</strong></td>
+                                            <td>David Wilson</td>
+                                            <td>JSS 3</td>
+                                            <td>₦160,000</td>
+                                            <td>Jan 12, 2025</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Chart Initialization
+        const ctx = document.getElementById('thermalChart').getContext('2d');
+        
+        // Custom Gradient using your color: rgb(77, 2, 2)
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(77, 2, 2, 0.8)');
+        gradient.addColorStop(1, 'rgba(77, 2, 2, 0)');
+
+        const thermalChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00'],
+                datasets: [{
+                    label: 'Thermal Output (Celsius)',
+                    data: [45, 52, 48, 70, 65, 88],
+                    borderColor: 'rgb(255, 30, 30)',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: 'rgb(77, 2, 2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: 'rgb(255, 100, 100)', font: { size: 14 } }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(77, 2, 2, 0.3)' },
+                        ticks: { color: 'rgb(255, 100, 100)' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(77, 2, 2, 0.3)' },
+                        ticks: { color: 'rgb(255, 100, 100)' }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutExpo'
+                }
+            }
+        });
+
+        // Student Distribution Chart
+        const studentCtx = document.getElementById('studentChart').getContext('2d');
+        const studentChart = new Chart(studentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Primary', 'JSS', 'SSS'],
+                datasets: [{
+                    data: [450, 420, 375],
+                    backgroundColor: [
+                        'rgba(78, 115, 223, 0.8)',
+                        'rgba(28, 200, 138, 0.8)',
+                        'rgba(246, 194, 62, 0.8)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Live Data Simulation
+        setInterval(() => {
+            const newData = thermalChart.data.datasets[0].data;
+            newData.shift();
+            newData.push(Math.floor(Math.random() * 35) + 60);
+            thermalChart.update();
+        }, 2500);
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = toggle && toggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

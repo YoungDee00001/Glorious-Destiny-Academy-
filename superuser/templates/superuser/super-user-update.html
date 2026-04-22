@@ -1,0 +1,52 @@
+{% extends 'ba_base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm p-4">
+    <h3 class="mb-4">Authorization</h3>
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          {{ form.full_name.label_tag }}
+          {{ form.full_name }}
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+      </div>
+
+      <hr>
+      <h5 class="mb-3 text-danger">Permissions</h5>
+      <div class="form-check">
+        {{ form.active.label_tag }}
+        <label class="form-check-label">{{ form.active }}</label>
+      </div>
+      <div class="form-check">
+        {{ form.staff.label_tag }}
+        <label class="form-check-label">{{ form.staff }}</label>
+      </div>
+      <div class="form-check">
+        {{ form.admin.label_tag }}
+        <label class="form-check-label">{{ form.admin }}</label>
+      </div>
+      <div class="form-check">
+        {{ form.superuser.label_tag }}
+        <label class="form-check-label">{{ form.superuser }}</label>
+      </div>
+
+      <div class="form-check">
+        {{ form.students.label_tag }}
+        <label class="form-check-label">{{ form.students }}</label>
+      </div>
+
+      
+
+      <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+      <a class="btn btn-outline-primary mt-3" href="{% url 'SuperUserList' %}">Back home</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'ba_base.html' %}
+{% load static %}
+
+{% block title %}
+Superuser Staff List View
+{% endblock %}
+
+{% block page %}
+Superuser Staff List View
+{% endblock %}
+
+{% block content %} 
+
+<div class="table-responsive">
+
+    <h4 class="mb-3 text-primary">
+        Total Staff: {{ staff_count }}
+    </h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Fullname</th>
+                <th scope="col">Email</th>
+                <th scope="col">Date Joined</th>
+                <th scope="col">Last Login</th>
+                <!-- <th scope="col">Class</th> -->
+                <th scope="col">Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in staffs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ staff.full_name }}</td>
+                <td>{{ staff.email }}</td>
+                <td>{{ staff.date_joined|date:"M d, Y" }}</td>
+                <td>{{ staff.last_login|date:"M d, Y H:i" }}</td>
+                <!-- <td>{{ staff.student_class}}</td> -->
+
+                <td> <a class="btn btn-outline-info btn-sm" href="#">Details</a> </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    No staff found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-primary" href="{% url 'SuperuserAdmin' %}">Back Home</a>
+</div>
+{% endblock %}

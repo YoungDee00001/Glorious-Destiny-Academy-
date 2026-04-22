@@ -1,0 +1,52 @@
+{% extends "ba_base.html" %}
+{% load static %}
+
+{% block title %}
+Staff Registration Form
+{% endblock %}
+
+{% block page %}
+Staff Registration Form
+{% endblock %}
+
+{% block content %}
+<!-- <div class="container"> -->
+
+    <!-- <hr> -->
+    <form method='POST'> {% csrf_token %}
+        <div class="mb-3">
+            <label for="">Full Name</label>
+            <input type="text" name="full_name" placeholder="Enter your name" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="">Email</label>
+            <input type="email" name="email" placeholder="Enter your email" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="">Password</label>
+            <input type="password" name="password1" placeholder="Enter your password" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="">Confirmation Password</label>
+            <input type="password" name="password2" placeholder="Confirm your password" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="">Staff Consent</label>
+            <input type="checkbox" name="staff_consent">
+        </div>
+
+        <div class="mb-3">
+            <label for="">Staff Authorization</label>
+            <input type="checkbox" name="staff">
+        </div>
+        
+        <button class="btn btn-outline-primary" type='submit'>Register</button>
+        <a class="btn btn-primary" href="{% url 'SuperuserAdmin' %}">Back Home</a>
+    </form>
+<!-- </div> -->
+{% endblock %}
+
