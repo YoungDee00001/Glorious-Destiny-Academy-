@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'widget_tweaks',
-    'channels',
+    # 'channels',
 
     'accounts',
     'myPage',
@@ -74,21 +74,21 @@ AUTH_USER_MODEL = 'accounts.User'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# ------------------------------------------------------------
-# CHANNELS (WebSocket)
-# ------------------------------------------------------------
-ASGI_APPLICATION = "GloriousProject.asgi.application"
+# # ------------------------------------------------------------
+# # CHANNELS (WebSocket)
+# # ------------------------------------------------------------
+# ASGI_APPLICATION = "GloriousProject.asgi.application"
 
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+# REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [REDIS_URL],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [REDIS_URL],
+#         },
+#     },
+# }
 
 # ------------------------------------------------------------
 # MIDDLEWARE
@@ -193,15 +193,6 @@ PAYSTACK_PUBLIC_KEY = "pk_test_fe15622a8f8d6ee21a455627d7fe59b08bdf80f7"
 PAYSTACK_SECRET_KEY = "sk_test_ce2a0d954fd5ae8945eaf4ac00f914a91a02f7f4"
 PAYSTACK_INITIALIZE_URL = "https://api.paystack.co/transaction/initialize"
 PAYSTACK_VERIFY_URL = "https://api.paystack.co/transaction/verify/"
-
-# ------------------------------------------------------------
-# TERMII CONFIGURATION
-# ------------------------------------------------------------
-TERMII_API_KEY = "TLiTiVpBmhUIcVNPYfsgszERYrXJDpCnBOSlXpQkTAIZPnJSzOobHimUymVhrZ"
-TERMII_SENDER_ID = os.environ.get('TERMII_SENDER_ID')
-TERMII_MESSAGE_TYPE = '2'
-TERMII_DLT_TE_ID = os.environ.get('TERMII_DLT_TE_ID')
-TERMII_DLT_TEMPLATE_ID = os.environ.get('TERMII_DLT_TEMPLATE_ID')
 
 # ------------------------------------------------------------
 # LOGGING
