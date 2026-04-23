@@ -1,0 +1,102 @@
+.topbar {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  align-items: center;
+  /* margin: 30px; */
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-radius: 30px;
+  /* background-color: rgb(77, 2, 2); Your brand color */
+   background: linear-gradient(to right, 
+              white 0%, 
+              white 15%, 
+              rgb(77, 2, 2) 15%, 
+              rgb(77, 2, 2) 85%, 
+              white 85%, 
+              white 100%); 
+  
+  width: 80%;
+  position: relative;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+/* Logo styling */
+.logo img {
+  height: clamp(30px, 8vw, 60px);
+}
+
+@media screen and (max-width: 600px) {
+  .topbar{
+     background: linear-gradient(to right, 
+              white 0%, 
+              white 15%, 
+              rgb(77, 2, 2) 15%, 
+              rgb(77, 2, 2) 80%, 
+              white 80%, 
+              white 100%);
+  width: 100%;
+  }
+}
+
+/* Sliding text styling */
+.sliding-text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  margin: 0 20px;
+}
+
+.sliding-text p {
+  display: inline-block;
+  font-family: 'Scriptina', cursive;
+  font-size: 26px;
+  color: white; /* Cream text color */
+  animation: scrollText 16s linear infinite;
+}
+
+/* Slide animation */
+@keyframes scrollText {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+     @media (max-width: 600px) {
+      .sliding-text {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        margin: 0 20px;
+      }
+      .sliding-text p {
+        display: inline-block;
+        font-family: 'Scriptina', cursive;
+        font-size: 26px;
+        color: white; /* Cream text color */
+        animation: scrollText 15s linear infinite;
+      }
+
+      @keyframes scrollText {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    }
+
+    /* responsive sliding nav ends here */

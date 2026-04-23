@@ -1,0 +1,103 @@
+.login-wrap {
+      width: 100%;
+      max-width: 980px;
+      margin: 24px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .brand-panel {
+      padding: 36px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(11,30,60,0.06);
+    }
+
+    .brand-panel .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .logo .crest {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: var(--gda-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 6px 18px rgba(11,94,215,0.12);
+    }
+
+    .brand-panel h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #0b2545;
+    }
+
+    .brand-panel p {
+      color: #475569;
+      margin-top: 8px;
+    }
+
+    .login-card {
+      background: white;
+      padding: 26px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(11,30,60,0.08);
+    }
+
+    .login-card .form-label {
+      font-weight: 600;
+      color: #0b2545;
+    }
+
+    .btn-gda {
+      background: var(--gda-blue);
+      color: #fff;
+      border: none;
+    }
+
+    .separator {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+      margin: 18px 0;
+    }
+
+    .small-note {
+      color: #6b7280;
+      font-size: .95rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .login-wrap { grid-template-columns: 1fr; max-width: 520px; }
+      .brand-panel { order: 2; }
+      .login-card { order: 1; }
+    }
+
+
+
+    /* student icon  */
+
+    .icon-box {
+    width: 100px;
+    height: 200px;
+    background-color: #007BFF; /* box background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.icon-box i {
+    color: white; /* makes the student icon white */
+    font-size: 500px;
+}
