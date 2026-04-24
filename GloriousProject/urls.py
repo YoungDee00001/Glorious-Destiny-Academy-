@@ -16,36 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from django.conf.urls.static import static
-
-
 from accounts.views import home_page
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_page, name='home'),
-    
+
     path('dashboard/', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('administration/', include('administration.urls')),
     path('staff/', include('staff.urls')),
     path('students/', include('students.urls')),
     path('superuser/', include('superuser.urls')),
-    # path('parent/', include('parent.urls')),
     path('schoolevents/', include('schoolevents.urls')),
-    # path('notification/', include('notification.urls')),
     path('fees/', include('fees.urls')),
-    # path('online_payments/', include('online_payments.urls')),
     path('birthdays/', include('birthdays.urls')),
     path('chat/', include('chat.urls')),
     path('reportcard/', include('reportcard.urls')),
-
-    
 ]
 
+# Static files — only needed locally (Whitenoise handles on Render)
 if settings.DEBUG:
-    urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# ✅ NO media URL here — Cloudinary handles media on Render

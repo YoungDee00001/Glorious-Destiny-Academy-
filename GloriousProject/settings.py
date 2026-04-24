@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ------------------------------------------------------------
 # SECURITY SETTINGS
 # ------------------------------------------------------------
-SECRET_KEY = 'django-insecure-c&gs2e13$i5+8+oos%&wa!0=^+j0f)22#36=7@r14f)gbwk+y6'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c&gs2e13$i5+8+oos%&wa!0=^+j0f)22#36=7@r14f)gbwk+y6')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
 
@@ -27,7 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'django.contrib.humanize',
 
     'django_crontab',
@@ -35,7 +37,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'widget_tweaks',
-    # 'channels',
 
     'accounts',
     'myPage',
@@ -73,22 +74,6 @@ CRONJOBS = [
 AUTH_USER_MODEL = 'accounts.User'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
-# # ------------------------------------------------------------
-# # CHANNELS (WebSocket)
-# # ------------------------------------------------------------
-# ASGI_APPLICATION = "GloriousProject.asgi.application"
-
-# REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [REDIS_URL],
-#         },
-#     },
-# }
 
 # ------------------------------------------------------------
 # MIDDLEWARE
@@ -128,7 +113,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'GloriousProject.wsgi.application'
 
 # ------------------------------------------------------------
-# DATABASE — PostgreSQL via Railway
+# DATABASE — PostgreSQL via Render
 # ------------------------------------------------------------
 DATABASES = {
     'default': dj_database_url.config(
@@ -156,19 +141,28 @@ USE_I18N = True
 USE_TZ = True
 
 # ------------------------------------------------------------
-# STATIC & MEDIA FILES
+# STATIC FILES (Whitenoise handles this on Render)
 # ------------------------------------------------------------
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static_my_project"),
-]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_my_project")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# ------------------------------------------------------------
+# MEDIA FILES — Cloudinary (persistent uploads on Render)
+# ------------------------------------------------------------
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # ------------------------------------------------------------
 # DEFAULT PRIMARY KEY FIELD
@@ -182,15 +176,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gloriousdestinyacademygda@gmail.com'
-EMAIL_HOST_PASSWORD = 'ilciltoavwlxrugl'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'gloriousdestinyacademygda@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'ilciltoavwlxrugl')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ------------------------------------------------------------
 # PAYSTACK CONFIGURATION
 # ------------------------------------------------------------
-PAYSTACK_PUBLIC_KEY = "pk_test_fe15622a8f8d6ee21a455627d7fe59b08bdf80f7"
-PAYSTACK_SECRET_KEY = "sk_test_ce2a0d954fd5ae8945eaf4ac00f914a91a02f7f4"
+PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'pk_test_fe15622a8f8d6ee21a455627d7fe59b08bdf80f7')
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_ce2a0d954fd5ae8945eaf4ac00f914a91a02f7f4')
 PAYSTACK_INITIALIZE_URL = "https://api.paystack.co/transaction/initialize"
 PAYSTACK_VERIFY_URL = "https://api.paystack.co/transaction/verify/"
 
